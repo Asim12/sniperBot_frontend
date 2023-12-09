@@ -5,18 +5,21 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import userReducer from './userSlice';
+import walletReducer from './walletSlice'
 
 const persistConfig = {
   key: 'root',
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, userReducer);
+const persistedUserReducer = persistReducer(persistConfig, userReducer);
+const persistedWalletReducer = persistReducer(persistConfig, walletReducer);
 
 
 const store = configureStore({
   reducer: {
-    user: persistedReducer,
+    user: persistedUserReducer,
+    wallet:persistedWalletReducer
   },
 });
 

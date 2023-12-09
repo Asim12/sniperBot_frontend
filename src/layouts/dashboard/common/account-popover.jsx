@@ -13,6 +13,19 @@ import { account } from 'src/_mock/account';
 import { logoutUser } from 'src/redux/action';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'src/routes/hooks';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import { getWalletDetails } from 'src/redux/action';
+import { useSelector } from 'react-redux';
+import { useRef } from 'react';
+import { CircularProgress } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +39,7 @@ const MENU_OPTIONS = [
     icon: 'eva:person-fill',
   },
   {
-    label: 'Settings',
+    label: 'My Wallet',
     icon: 'eva:settings-2-fill',
   },
 ];
@@ -35,8 +48,16 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false); // New state for the dialog
+  const [copyStatus, setCopyStatus] = useState({ wallet: false, privateKey: false });
+  const [copyTimeout, setCopyTimeout] = useState(null);
+
   const dispatch=useDispatch()
   const router=useRouter()
+  const passwordRef = useRef(null);
+  const walletState = useSelector((state) => state.wallet);
+  console.log('wallet state',walletState)
+
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -50,6 +71,44 @@ export default function AccountPopover() {
     await logoutUser(dispatch,router)
   }
 
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const getWalletDetailsHandler=async ()=>{
+    const password = passwordRef.current.value;
+    try{
+
+      await  getWalletDetails(dispatch,password)
+    }catch(error){
+      console.log(error)
+    }
+
+  }
+
+  const truncateAddress = (address) => {
+    const prefix = address.substring(0, 6);
+    const suffix = address.substring(address.length - 4);
+    return `${prefix}...${suffix}`;
+  };
+  const handleCopyToClipboard = (text, type) => {
+    navigator.clipboard.writeText(text);
+    setCopyStatus((prev) => ({ ...prev, [type]: true }));
+
+    // Clear previous timeout
+    clearTimeout(copyStatus[type]);
+
+    // Set a new timeout to reset copy status after a few seconds
+    const timeoutId = setTimeout(() => {
+      setCopyStatus((prev) => ({ ...prev, [type]: false }));
+    }, 3000);
+
+    setCopyStatus((prev) => ({ ...prev, [type]: timeoutId }));
+  };
   return (
     <>
       <IconButton
@@ -104,7 +163,14 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={handleClose}>
+          <MenuItem key={option.label} onClick={(e)=>{
+            if(e.target.textContent==='My Wallet'){
+              handleDialogOpen()
+            }else{
+
+              handleClose()
+            }
+            }}>
             {option.label}
           </MenuItem>
         ))}
@@ -120,6 +186,63 @@ export default function AccountPopover() {
           Logout
         </MenuItem>
       </Popover>
+
+
+      <Dialog open={dialogOpen} onClose={handleDialogClose} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <DialogTitle>Get Wallet Details</DialogTitle>
+       {walletState.loading? <div style={{ textAlign: 'center', margin: '20px 0' }}>
+          <CircularProgress />
+        </div>:walletState.wallet!==''&&walletState.private_key!==''?<div style={{padding:'1rem'}}>
+        <Typography variant="body1" style={{ padding: '1rem' }}>
+      <span style={{ fontWeight: 'bold' }}>Wallet Address:</span>{' '}
+      {truncateAddress(walletState?.wallet)}
+      <Tooltip title={copyStatus.wallet ? 'Copied!' : 'Copy to Clipboard'} arrow>
+        <Button
+          size="small"
+          onClick={() => handleCopyToClipboard(walletState?.wallet, 'wallet')}
+          disabled={copyStatus.wallet}
+        >
+          {copyStatus.wallet ? 'Copied' : 'Copy'}
+        </Button>
+      </Tooltip>
+    </Typography>
+    <Typography variant="body1" style={{ padding: '1rem' }}>
+      <span style={{ fontWeight: 'bold' }}>Private Key:</span>{' '}
+      {truncateAddress(walletState?.private_key)}
+      <Tooltip title={copyStatus.privateKey ? 'Copied!' : 'Copy to Clipboard'} arrow>
+        <Button
+          size="small"
+          onClick={() => handleCopyToClipboard(walletState?.private_key, 'privateKey')}
+          disabled={copyStatus.privateKey}
+        >
+          {copyStatus.privateKey ? 'Copied' : 'Copy'}
+        </Button>
+      </Tooltip>
+    </Typography>
+        </div>: <div>
+        <DialogContent>
+          <DialogContentText>
+            To get your wallet details, please enter your password here.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="password"
+            type="password"
+            fullWidth
+            variant="standard"
+            inputRef={passwordRef}
+          />
+          
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={getWalletDetailsHandler}>Get Details</Button>
+        </DialogActions>
+        </div>}
+      </Dialog>
+    
     </>
   );
 }
