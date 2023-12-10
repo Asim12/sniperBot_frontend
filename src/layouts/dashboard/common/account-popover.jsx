@@ -83,7 +83,7 @@ export default function AccountPopover() {
     const password = passwordRef.current.value;
     try{
 
-      await  getWalletDetails(dispatch,password)
+      await  dispatch(getWalletDetails(password))
     }catch(error){
       console.log(error)
     }
@@ -192,7 +192,7 @@ export default function AccountPopover() {
         <DialogTitle>Get Wallet Details</DialogTitle>
        {walletState.loading? <div style={{ textAlign: 'center', margin: '20px 0' }}>
           <CircularProgress />
-        </div>:walletState.wallet!==''&&walletState.private_key!==''?<div style={{padding:'1rem'}}>
+        </div>:walletState.wallet&&walletState.wallet!==''&&walletState.private_key&&walletState.private_key!==''?<div style={{padding:'1rem'}}>
         <Typography variant="body1" style={{ padding: '1rem' }}>
       <span style={{ fontWeight: 'bold' }}>Wallet Address:</span>{' '}
       {truncateAddress(walletState?.wallet)}

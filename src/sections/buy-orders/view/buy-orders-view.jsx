@@ -37,7 +37,7 @@ export default function BuyOrdersPage() {
 
   console.log('buy state',buyOrdersState.buyOrders)
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
 
@@ -48,12 +48,14 @@ export default function BuyOrdersPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+
 
   console.log('page number is ',page)
 
 
   useEffect(() => {
-    dispatch(getBuyOrders({limit:rowsPerPage,pageNumber:page}))
+    dispatch(getBuyOrders({limit:20,pageNumber:page+1}))
   }, [rowsPerPage,page]);
 
   const handleSort = (event, id) => {
@@ -61,18 +63,21 @@ export default function BuyOrdersPage() {
     if (id !== '') {
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(id);
-    }
+    } 
   };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      console.log('even target checked ',event.target.checked)
-      const newSelecteds = buyOrdersState.buyOrders.map((order) => order._id);
+      const newSelecteds = buyOrdersState.buyOrders
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        .map((order) => order._id);
+  
       setSelected(newSelecteds);
     } else {
       setSelected([]);
     }
   };
+  
   
   const handleClick = (event, _id) => {
     const selectedIndex = selected.indexOf(_id);
@@ -97,7 +102,7 @@ export default function BuyOrdersPage() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPage(1);
+    setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
@@ -136,8 +141,8 @@ export default function BuyOrdersPage() {
             <Table sx={{ minWidth: 800 }}>
               <OrdersTableHead
                 order={order}
-                orderBy={orderBy}
-                rowCount={users.length}
+                // orderBy={orderBy}
+                rowCount={buyOrdersState.buyOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -158,7 +163,7 @@ export default function BuyOrdersPage() {
                 ]}
               />
               <TableBody>
-              {buyOrdersState?.buyOrders?.map((row) => (
+              {buyOrdersState?.buyOrders?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <OrdersTableRow
                       key={row._id}
   

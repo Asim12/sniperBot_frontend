@@ -36,7 +36,7 @@ export default function SoldOrdersPage() {
   const soldOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
 
   console.log('sold order state is',soldOrdersState)
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
 
@@ -52,7 +52,7 @@ export default function SoldOrdersPage() {
 
 
   useEffect(() => {
-    dispatch(getSoldOrders({limit:rowsPerPage,pageNumber:page}))
+    dispatch(getSoldOrders({limit:20,pageNumber:page+1}))
   }, [rowsPerPage,page]);
 
   const handleSort = (event, id) => {
@@ -65,18 +65,22 @@ export default function SoldOrdersPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = users.map((n) => n.name);
+      const newSelecteds = soldOrdersState.soldOrders
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        .map((order) => order._id);
+  
       setSelected(newSelecteds);
-      return;
+    } else {
+      setSelected([]);
     }
-    setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+
+  const handleClick = (event, _id) => {
+    const selectedIndex = selected.indexOf(_id);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, _id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -89,13 +93,12 @@ export default function SoldOrdersPage() {
     }
     setSelected(newSelected);
   };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPage(1);
+    setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
@@ -134,8 +137,8 @@ export default function SoldOrdersPage() {
             <Table sx={{ minWidth: 800 }}>
               <OrdersTableHead
                 order={order}
-                orderBy={orderBy}
-                rowCount={users.length}
+                // orderBy={orderBy}
+                rowCount={soldOrdersState.soldOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -159,7 +162,7 @@ export default function SoldOrdersPage() {
                 ]}
               />
               <TableBody>
-                {soldOrdersState?.soldOrders?.map((row) => (
+                {soldOrdersState?.soldOrders?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <OrdersTableRow
                       key={row._id}
                       sellPrice={row?.sell_price}
@@ -178,8 +181,8 @@ export default function SoldOrdersPage() {
                       amount={row?.amount}
                       chainId={row?.chain_id}
                       profitPercentage={row?.profit_percentage}
-                      selected={selected.indexOf(row.name) !== -1}
-                      handleClick={(event) => handleClick(event, row.name)}
+                      selected={selected.indexOf(row._id) !== -1}
+                      handleClick={(event) => handleClick(event, row._id)}
                     />
                   ))}
 
@@ -194,15 +197,15 @@ export default function SoldOrdersPage() {
           </TableContainer>
         </Scrollbar>
 
-        <TablePagination
+         <TablePagination
           page={page}
           component="div"
-          count={users.length}
+          count={soldOrdersState.soldOrders.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+          />
       </Card>
     </Container>
   );

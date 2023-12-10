@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { login, registerUser } from './action';
 
 const userSlice = createSlice({
   name: 'user',
@@ -11,6 +12,12 @@ const userSlice = createSlice({
     signupLoading: false, // Separate loading state for signup
   },
   reducers: {
+    setSignupUser: (state) => {
+      state.signupLoading = false;
+      // Handle the response for signup as needed
+      // Update the state with the relevant information from the signup response
+    },
+
     setUser: (state, action) => {
       console.log('action payload is ', action.payload);
       state.first_name = action.payload.verify.first_name;
@@ -18,11 +25,6 @@ const userSlice = createSlice({
       state.email = action.payload.verify.email;
       state.role = action.payload.verify.role;
       state.loginLoading=false
-    },
-    setSignupUser: (state) => {
-      state.signupLoading=false
-      // Handle the response for signup as needed
-      // Update the state with the relevant information from the signup response
     },
 
     startLoginLoading: (state) => {
@@ -37,9 +39,57 @@ const userSlice = createSlice({
     stopSignupLoading: (state) => {
       state.signupLoading = false; // Set signup loading to false when stopping signup operation
     },
+
+    
+
+    extraReducers: (builder) => {
+      builder.addCase(login.pending, (state) => {
+        state.loginLoading = true;
+      });
+      builder.addCase(login.fulfilled, (state, action) => {
+        console.log('login slice payload',action.payload)
+        state.loginLoading = false;
+        console.log('action payload is ', action.payload);
+        state.first_name = action.payload.verify.first_name;
+        state.last_name = action.payload.verify.last_name;
+        state.email = action.payload.verify.email;
+        state.role = action.payload.verify.role;
+        state.loginLoading = false;
+
+
+      });
+      builder.addCase(login.rejected, (state) => {
+        state.loginLoading = false;
+      });
+
+
+
+
+
+
+      builder.addCase(registerUser.pending, (state) => {
+        state.signupLoading = true;
+      });
+      builder.addCase(registerUser.fulfilled, (state, action) => {
+       
+        state.signupLoading = false;
+
+
+      });
+      builder.addCase(registerUser.rejected, (state) => {
+        state.signupLoading = false;
+      });
+    },
   },
 });
 
-export const { setUser, setSignupUser,startLoginLoading,stopLoginLoading,startSignupLoading,stopSignupLoading } = userSlice.actions;
+export const {
+  setUser,
+  setSignupUser,
+  startLoginLoading,
+  stopLoginLoading,
+  startSignupLoading,
+  stopSignupLoading,
+} = userSlice.actions;
 
 export default userSlice.reducer;

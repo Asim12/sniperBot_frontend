@@ -63,7 +63,7 @@ export default function SignupView() {
 
     try{
 
-      await registerUser(dispatch, firstName, lastName, email, password,router);
+      await dispatch(registerUser( {firstName, lastName, email, password,router}));
     }catch(error){
       console.log(error)
     }

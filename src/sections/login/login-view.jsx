@@ -50,8 +50,10 @@ export default function LoginView() {
     const password = passwordRef.current.value;
     try{
 
-      await login(dispatch,email,password,router)
-    }catch(error){
+      await dispatch(login({email,password,router}))
+     }
+      
+      catch(error){
       console.log(error)
     }
   };
