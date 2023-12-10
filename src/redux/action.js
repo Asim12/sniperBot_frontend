@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { showToast } from 'src/components/snackbar/toastHelper';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   setSignupUser,
   setUser,
@@ -9,6 +10,7 @@ import {
   stopSignupLoading,
 } from './userSlice';
 import { setWallet, startLoading, stopLoading } from './walletSlice';
+import { setSoldOrders } from './orderSlice';
 
 // auth actions
 export const login = async (dispatch, email, password, router) => {
@@ -139,10 +141,78 @@ export const getWalletDetails = async (dispatch, password) => {
 
     return { data };
   } catch (error) {
-    const token = localStorage.getItem('token'); // Replace 'yourTokenKey' with the actual key you use to store the token
     showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
     return { error: error.message };
   } finally {
     dispatch(stopLoading());
   }
 };
+
+
+
+// sold order action
+
+
+export const getSoldOrders = createAsyncThunk(
+  'soldOrders/fetchSoldOrders',
+  async ({ limit, pageNumber }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(startLoading());
+
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:3000/api/getSoldOrder',
+        { limit, page_number: pageNumber },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
+
+      const { data } = response;
+      showToast('Orders retrieved!', { type: 'success' });
+
+      return data.sold_order;
+    } catch (error) {
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+);
+
+
+// buy order actions
+
+
+export const getBuyOrders = createAsyncThunk(
+  'buyOrders/fetchBuyOrders',
+  async ({ limit, pageNumber }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(startLoading());
+
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:3000/api/getBuyOrder',
+        { limit, page_number: pageNumber },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
+
+      const { data } = response;
+      showToast('Orders retrieved!', { type: 'success' });
+
+      return data.buy_order;
+    } catch (error) {
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+);
