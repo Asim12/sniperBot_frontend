@@ -9,6 +9,8 @@ const walletSlice = createSlice({
     loading: false,
   },
   reducers: {
+
+   
   
     startLoading: (state) => {
       state.loading = true;
@@ -16,6 +18,11 @@ const walletSlice = createSlice({
     stopLoading: (state) => {
       state.loading = false;
     },
+    resetWalletState:(state)=>{
+      state.wallet='';
+      state.private_key='';
+      state.loading=false
+    }
   },
   // Use 'builder' instead of 'reducers' in createSlice for extraReducers
   extraReducers: (builder) => {
@@ -31,6 +38,8 @@ const walletSlice = createSlice({
         console.log('action.payload is ',action.payload)
         state.wallet=action.payload.wallet;
         state.private_key=action.payload.privake_key
+
+         
       })
       .addCase(getWalletDetails.rejected, (state, action) => {
         // Automatically handle rejected state
@@ -40,6 +49,6 @@ const walletSlice = createSlice({
   },
 });
 
-export const { setWallet, startLoading, stopLoading } = walletSlice.actions;
+export const { setWallet, startLoading, stopLoading,resetWalletState } = walletSlice.actions;
 
 export default walletSlice.reducer;

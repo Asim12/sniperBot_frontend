@@ -47,7 +47,7 @@ export default function BuyOrdersPage() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
 
 
@@ -201,7 +201,7 @@ export default function BuyOrdersPage() {
           count={buyOrdersState.buyOrders.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[ 10,15, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
           />
       </Card>

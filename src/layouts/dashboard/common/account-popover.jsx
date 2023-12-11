@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { account } from 'src/_mock/account';
-import { logoutUser } from 'src/redux/action';
+import { logoutUser, resetWalletDetails } from 'src/redux/action';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'src/routes/hooks';
 import TextField from '@mui/material/TextField';
@@ -77,6 +77,7 @@ export default function AccountPopover() {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    resetWalletDetails(dispatch)
   };
 
   const getWalletDetailsHandler=async ()=>{

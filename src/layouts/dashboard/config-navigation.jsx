@@ -12,14 +12,11 @@ const navConfig = [
     path: '/',
     icon: icon('ic_analytics'),
   },
+
+
   {
-    title: 'user',
-    path: '/user',
-    icon: icon('ic_user'),
-  },
-  {
-    title: 'product',
-    path: '/products',
+    title: 'Buy Orders',
+    path: '/buy-orders',
     icon: icon('ic_cart'),
   },
 
@@ -28,26 +25,15 @@ const navConfig = [
     path: '/sold-orders',
     icon: icon('ic_cart'),
   },
+
+
   {
-    title: 'Buy Orders',
-    path: '/buy-orders',
+    title: 'Custom Orders',
+    path: '/custom-orders',
     icon: icon('ic_cart'),
   },
-  {
-    title: 'blog',
-    path: '/blog',
-    icon: icon('ic_blog'),
-  },
-  {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+  
+
 ];
 
 export default navConfig;

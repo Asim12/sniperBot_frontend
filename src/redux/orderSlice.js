@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getSoldOrders,getBuyOrders } from "./action";
+import { getSoldOrders,getBuyOrders,getCustomOrders,addCustomOrders } from "./action";
 const orderSlice = createSlice({
     name: 'orders',
     initialState: {
       soldOrdersLoading: false,
       buyOrdersLoading:false,
+      customOrdersLoading:false,
+      addOrderLoading:false,
       soldOrders: [],
-      buyOrders:[]
+      buyOrders:[],
+      customOrders:[]
     },
     reducers: {
     
@@ -42,9 +45,35 @@ const orderSlice = createSlice({
       builder.addCase(getBuyOrders.rejected, (state) => {
         state.buyOrdersLoading = false;
       });
+
+
+
+      builder.addCase(getCustomOrders.pending, (state) => {
+        state.customOrdersLoading = true;
+      });
+      builder.addCase(getCustomOrders.fulfilled, (state, action) => {
+        state.customOrdersLoading = false;
+        state.customOrders = action.payload;
+      });
+      builder.addCase(getCustomOrders.rejected, (state) => {
+        state.customOrdersLoading = false;
+      });
+
+
+
+
+      builder.addCase(addCustomOrders.pending, (state) => {
+        state.customOrdersLoading = true;
+      });
+      builder.addCase(addCustomOrders.fulfilled, (state, action) => {
+        state.customOrdersLoading = false;
+      });
+      builder.addCase(addCustomOrders.rejected, (state) => {
+        state.customOrdersLoading = false;
+      });
     },
   });
   
-  export const { setSoldOrders, startLoading, stopLoading } = orderSlice.actions;
+  export const { setSoldOrders, startLoading, stopLoading,customOrdersLoading } = orderSlice.actions;
   
   export default orderSlice.reducer;
