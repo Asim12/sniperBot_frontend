@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { set, sub } from 'date-fns';
 import { faker } from '@faker-js/faker';
@@ -19,9 +19,11 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 
 import { fToNow } from 'src/utils/format-time';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getNotifications, markAllasReadNotifications } from 'src/redux/action';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
+import { useCallback } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -75,28 +77,33 @@ const NOTIFICATIONS = [
 
 export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
-
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+  const dispatch = useDispatch();
+  const notificationState = useSelector((state) => state.notification);
+  console.log(
+    '🚀 ~ file: notifications-popover.jsx:81 ~ NotificationsPopover ~ notificationState:',
+    notificationState
+  );
+  const totalUnRead = notificationState.notifications.notifications.filter((item) => item.read_status === false).length;
 
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
+    console.log('hi');
   };
 
   const handleClose = () => {
     setOpen(null);
   };
 
-  const handleMarkAllAsRead = () => {
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        isUnRead: false,
-      }))
-    );
-  };
+  const handleMarkAllAsRead = ()=>{
+    dispatch(markAllasReadNotifications());
+    dispatch(getNotifications())
+  }
 
+  useEffect(() => {
+    dispatch(getNotifications());
+  }, [dispatch]);
   return (
     <>
       <IconButton color={open ? 'primary' : 'default'} onClick={handleOpen}>
@@ -147,9 +154,11 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(0, 2).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
-            ))}
+            {notificationState.notifications.notifications
+              .filter((notification) => notification.read_status===false)
+              .map((notification) => (
+                <NotificationItem key={notification.id} notification={notification} />
+              ))}
           </List>
 
           <List
@@ -160,9 +169,11 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(2, 5).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
-            ))}
+             {notificationState.notifications.notifications
+              .filter((notification) => notification.read_status===true)
+              .map((notification) => (
+                <NotificationItem key={notification._id} notification={notification} />
+              ))}
           </List>
         </Scrollbar>
 
@@ -201,7 +212,7 @@ function NotificationItem({ notification }) {
         py: 1.5,
         px: 2.5,
         mt: '1px',
-        ...(notification.isUnRead && {
+        ...(notification.read_status===false && {
           bgcolor: 'action.selected',
         }),
       }}
@@ -235,9 +246,9 @@ function NotificationItem({ notification }) {
 function renderContent(notification) {
   const title = (
     <Typography variant="subtitle2">
-      {notification.title}
+      {notification.subject}
       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {notification.description}
+        &nbsp; {notification.message}
       </Typography>
     </Typography>
   );

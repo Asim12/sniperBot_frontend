@@ -13,12 +13,17 @@ import IconButton from '@mui/material/IconButton';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
+import { formatDistanceToNow } from 'date-fns';
+
 
 // ----------------------------------------------------------------------
 
 export default function OrdersTableRow({
   selected,
-
+  createdAt,
+  updatedAt,
+  currentStatus,
+  action,
   status,
   symbol,
   count,
@@ -47,22 +52,18 @@ export default function OrdersTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
-       
-
-        <TableCell align="center">{status}</TableCell>
+        <TableCell align="center">{_id}</TableCell>
         <TableCell align="center">{symbol}</TableCell>
+        <TableCell>{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</TableCell>
+        <TableCell align="center">{status}</TableCell>
+        <TableCell align="center" style={{color:currentStatus>0?"green":'red'}}>{currentStatus}</TableCell>
         <TableCell align="center">{count}</TableCell>
 
         <TableCell align="center">{name}</TableCell>
         <TableCell align="center">{type}</TableCell>
-     
-        <TableCell align="center">{userId}</TableCell>
-        <TableCell align="center">{_id}</TableCell>
-       
-      
-        <TableCell align="center">{contractAddress}</TableCell>
-        <TableCell align="center">{pairAddress}</TableCell>
-    
+
+        <TableCell align="center">{formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}</TableCell>
+        <TableCell align="center">{action}</TableCell>
 
         {/* <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>

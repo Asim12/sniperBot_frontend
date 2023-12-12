@@ -9,6 +9,11 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import { users } from 'src/_mock/user';
 
@@ -26,16 +31,15 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { getSoldOrders } from 'src/redux/action';
+import { MoreVert } from '@mui/icons-material';
 // ----------------------------------------------------------------------
 
 export default function SoldOrdersPage() {
   const dispatch = useDispatch();
 
-
-
   const soldOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
 
-  console.log('sold order state is',soldOrdersState)
+  console.log('sold order state is', soldOrdersState);
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -47,13 +51,29 @@ export default function SoldOrdersPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [dialogOpen, setDialogOpen] = useState(false); // New state for the dialog
+  const [selectedRow, setSelectedRow] = useState(null); // New state for selected row
 
-  console.log('page number is ',page)
+  console.log('page number is ', page);
+  console.log('selected row',selectedRow)
 
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const truncateAddress = (address) => {
+    const prefix = address.substring(0, 6);
+    const suffix = address.substring(address.length - 4);
+    return `${prefix}...${suffix}`;
+  };
 
   useEffect(() => {
-    dispatch(getSoldOrders({limit:20,pageNumber:page+1}))
-  }, [rowsPerPage,page]);
+    dispatch(getSoldOrders({ limit: 20, pageNumber: page + 1 }));
+  }, [rowsPerPage, page]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -62,19 +82,33 @@ export default function SoldOrdersPage() {
       setOrderBy(id);
     }
   };
-
+  const vertClickHelper = (row) => {
+    const selectedIndex = selected.indexOf(row._id);
+    let newSelected = [];
+  
+    if (selectedIndex === -1) {
+      // If the row is not selected, add it to the selection
+      newSelected = newSelected.concat(selected, row._id);
+    } else {
+      // If the row is already selected, remove it from the selection
+      newSelected = selected.filter((id) => id !== row._id);
+      setSelectedRow(null); // Clear the selected row when unselecting
+    }
+  
+    setSelected(newSelected);
+    setSelectedRow(row);
+  };
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = soldOrdersState.soldOrders
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((order) => order._id);
-  
+
       setSelected(newSelecteds);
     } else {
       setSelected([]);
     }
   };
-
 
   const handleClick = (event, _id) => {
     const selectedIndex = selected.indexOf(_id);
@@ -138,52 +172,77 @@ export default function SoldOrdersPage() {
               <OrdersTableHead
                 order={order}
                 // orderBy={orderBy}
-                rowCount={soldOrdersState.soldOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).length}
+                rowCount={
+                  soldOrdersState.soldOrders.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  ).length
+                }
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'sellPrice', label: 'Sell Price' },
-                  { id: 'buyPrice', label: 'Buy Price' },
-                  { id: 'profitAmount', label: 'Profit Amount' },
+                  { id: '_id', label: 'Order ID' },
                   { id: 'symbol', label: 'Symbol', align: 'center' },
                   { id: 'logo', label: 'logo' },
-                  { id: 'buyTransactionHash', label: 'Buy Transaction Hash' },
-                  { id: 'sellTransactionHash', label: 'Sell Transaction Hash' },
-                  { id: 'status', label: 'Status' },
-                  { id: '_id', label: '_id' },
-                  { id: 'contractAddress', label: 'Contract Address' },
-                  { id: 'pairAddress', label: 'Pair Address' },
-                  { id: 'userId', label: 'User Id' },
+                  { id: 'buyPrice', label: 'Buy Price' },
+                  { id: 'type', label: 'type' },
+                  { id: 'createdAt', label: 'Created At' },
+
+                  { id: 'sellPrice', label: 'Sell Price' },
+                  { id: 'profitAmount', label: 'Profit Amount' },
+
                   { id: 'amount', label: 'Amount' },
-                  { id: 'chainId', label: 'Chain ID' },
+
+                  { id: 'status', label: 'Status' },
                   { id: 'profitPercentage', label: 'Profit Percentage' },
+                  { id: 'currentStatus', label: 'Current Status' },
+
+                  { id: 'chainId', label: 'Chain ID' },
+                  { id: 'updatedAt', label: 'Updated At' },
+                  { id: 'action', label: 'Action' },
                   { id: '' },
                 ]}
               />
               <TableBody>
-                {soldOrdersState?.soldOrders?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <OrdersTableRow
-                      key={row._id}
-                      sellPrice={row?.sell_price}
-  
-                      buyPrice={row?.buy_price}
-                      profitAmount={row?.profit_amount}
-                      symbol={row?.symbol}
-                      logo={row?.logo}
-                      buyTransactionHash={row?.buy_transaction_hash}
-                      sellTransactionHash={row?.sell_transaction_hash}
-                      status={row?.status}
-                      _id={row?._id}
-                      contractAddress={row?.contractAddress}
-                      pairAddress={row?.pairAddress}
-                      userId={row?.user_id}
-                      amount={row?.amount}
-                      chainId={row?.chain_id}
-                      profitPercentage={row?.profit_percentage}
-                      selected={selected.indexOf(row._id) !== -1}
-                      handleClick={(event) => handleClick(event, row._id)}
-                    />
+                {soldOrdersState?.soldOrders
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <>
+                      <OrdersTableRow
+                        key={row._id}
+                        _id={row?._id}
+                        sellPrice={row?.sell_price}
+                        buyPrice={row?.buy_price}
+                        profitAmount={row?.profit_amount}
+                        symbol={row?.symbol}
+                        logo={row?.logo}
+                        buyTransactionHash={row?.buy_transaction_hash}
+                        sellTransactionHash={row?.sell_transaction_hash}
+                        status={row?.status}
+                        contractAddress={row?.contractAddress}
+                        pairAddress={row?.pairAddress}
+                        userId={row?.user_id}
+                        type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
+                        createdAt={row?.createdAt}
+                        updatedAt={row?.updatedAt}
+                        currentStatus={0}
+                        amount={row?.amount}
+                        chainId={row?.chain_id}
+                        action={
+                          <MoreVert
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              handleDialogOpen();
+                              vertClickHelper(row);
+                            }}
+                          />
+                        }
+                        profitPercentage={row?.profit_percentage}
+                        selected={selected.indexOf(row._id) !== -1}
+                        handleClick={(event) => handleClick(event, row._id)}
+                      />
+                    </>
                   ))}
 
                 {/* <TableEmptyRows
@@ -197,16 +256,74 @@ export default function SoldOrdersPage() {
           </TableContainer>
         </Scrollbar>
 
-         <TablePagination
+        <TablePagination
           page={page}
           component="div"
           count={soldOrdersState.soldOrders.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[ 10, 15,25]}
+          rowsPerPageOptions={[10, 15, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+        />
       </Card>
+
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <DialogTitle>More Details</DialogTitle>
+        <div>
+          <DialogContent>
+            <DialogContentText>
+              <Stack   gap={'2px'}>
+                <Typography variant="subtitle1">Contaract Address: </Typography>
+                <Typography variant="p">{selectedRow?.contractAddress}</Typography>
+              </Stack>
+
+              <Stack
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1">Pair Address: </Typography>
+                <Typography variant="p">{selectedRow?.pairAddress}</Typography>
+              </Stack>
+
+              <Stack
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1">User ID: </Typography>
+                <Typography variant="p">{selectedRow?.user_id}</Typography>
+              </Stack>
+
+              <Stack
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1">Buy Transaction Hash: </Typography>
+                <Typography variant="p">{selectedRow?.buy_trasaction_hash}</Typography>
+              </Stack>
+
+              <Stack
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1">Sell Transaction Hash: </Typography>
+                <Typography variant="p">{selectedRow?.sell_trasaction_hash}</Typography>
+              </Stack>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>Cancel</Button>
+          </DialogActions>
+        </div>
+      </Dialog>
     </Container>
   );
 }

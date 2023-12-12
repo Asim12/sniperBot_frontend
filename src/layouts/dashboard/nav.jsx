@@ -16,10 +16,11 @@ import { RouterLink } from 'src/routes/components';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { account } from 'src/_mock/account';
+import { Link } from 'react-router-dom';
 
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
-
+import logoImg from '../../images/logo.png'
 import { NAV } from './config-layout';
 import navConfig from './config-navigation';
 
@@ -110,7 +111,14 @@ export default function Nav({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Logo sx={{ mt: 3, ml: 4 }} />
+      {/* <Logo sx={{ mt: 3, ml: 4 }} /> */}
+      <Link to="/">
+  <Avatar
+    src={logoImg} // Replace with the actual path or URL of your logo
+    alt="Logo"
+    sx={{ mt: 3, ml: 4, width: 48, height: 48 }} // Adjust the styling as needed
+  />
+</Link>
 
       {renderAccount}
 
@@ -118,7 +126,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      {renderUpgrade}
+      {/* {renderUpgrade} */}
     </Scrollbar>
   );
 

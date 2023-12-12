@@ -287,3 +287,46 @@ export const addCustomOrders = createAsyncThunk(
     } 
   }
 );
+
+
+
+
+export const getNotifications = createAsyncThunk(
+  'notifications/fetchNotifications',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
+      const response = await axios.get('http://localhost:3000/api/getNotifications', {
+        headers: {
+          'x-access-token': token,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error in getNotifications action:', error);
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    }
+  }
+);
+
+
+
+
+export const markAllasReadNotifications = createAsyncThunk(
+  'markAllRead/fetchMarkedNotifications',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
+      const response = await axios.get('http://localhost:3000/api/markAllAsRead', {
+        headers: {
+          'x-access-token': token,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error in getNotifications action:', error);
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    }
+  }
+);
+

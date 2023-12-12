@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import { formatDistanceToNow } from 'date-fns';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -32,6 +33,11 @@ export default function OrdersTableRow({
   amount,
   chainId,
   profitPercentage,
+  updatedAt,
+  createdAt,
+  type,
+  currentStatus,
+  action,
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
@@ -53,22 +59,24 @@ export default function OrdersTableRow({
 
       
 
-        <TableCell>{buyPrice}</TableCell>
 
 
+        <TableCell align="center">{_id}</TableCell>
         <TableCell align="center">{symbol}</TableCell>
 
         <TableCell align="center">{logo}</TableCell>
+        <TableCell align="center">{type}</TableCell>
+        <TableCell>{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</TableCell>
 
-        <TableCell align="center">{buyTransactionHash}</TableCell>
-        <TableCell align="center">{status}</TableCell>
-        <TableCell align="center">{_id}</TableCell>
-        <TableCell align="center">{contractAddress}</TableCell>
-        <TableCell align="center">{pairAddress}</TableCell>
-        <TableCell align="center">{userId}</TableCell>
         <TableCell align="center">{amount}</TableCell>
-        <TableCell align="center">{chainId}</TableCell>
+        <TableCell>{buyPrice}</TableCell>
+
+        <TableCell align="center">{status}</TableCell>
         <TableCell align="center">{profitPercentage}</TableCell>
+        <TableCell  style={{color:currentStatus>0?"green":'red'}} align="center">{currentStatus}</TableCell>
+        <TableCell align="center">{chainId}</TableCell>
+        <TableCell align="center">{formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}</TableCell>
+        <TableCell align="center">{action}</TableCell>
 
 
 

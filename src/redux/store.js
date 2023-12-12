@@ -7,6 +7,7 @@ import storage from 'redux-persist/lib/storage';
 import userReducer from './userSlice';
 import walletReducer from './walletSlice'
 import orderReducer from './orderSlice'
+import notificationReducer from './NotificationSlice'
 
 const persistConfig = {
   key: 'root',
@@ -16,13 +17,15 @@ const persistConfig = {
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
 const persistedWalletReducer = persistReducer(persistConfig, walletReducer);
 const persistedOrderReducer = persistReducer(persistConfig, orderReducer);
+const persistedNotificationReducer = persistReducer(persistConfig, notificationReducer);
 
 
 const store = configureStore({
   reducer: {
     user: persistedUserReducer,
     wallet:persistedWalletReducer,
-    order:persistedOrderReducer
+    order:persistedOrderReducer,
+    notification:persistedNotificationReducer
   },
 });
 

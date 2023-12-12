@@ -11,6 +11,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import { CircularProgress } from '@mui/material';
 import { users } from 'src/_mock/user';
+import { MoreVert } from '@mui/icons-material';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -57,6 +58,21 @@ export default function CustomOrdersPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false); // New state for the dialog
+
+  const [selectedRow, setSelectedRow] = useState(null); // New state for selected row
+  console.log('selected row is ',selectedRow)
+
+
+
+  const handleDetailDialogOpen = () => {
+    setDetailDialogOpen(true);
+  };
+
+  const handleDetailDialogClose = () => {
+    setDetailDialogOpen(false);
+  };
   console.log('page number is ', page);
 
   const addCustomOrderHandler = useCallback(() => {
@@ -70,6 +86,24 @@ export default function CustomOrdersPage() {
     setDialogOpen(false);
   };
 
+
+  const vertClickHelper = (row) => {
+    const selectedIndex = selected.indexOf(row._id);
+    let newSelected = [];
+  
+    if (selectedIndex === -1) {
+      // If the row is not selected, add it to the selection
+      newSelected = newSelected.concat(selected, row._id);
+    } else {
+      // If the row is already selected, remove it from the selection
+      newSelected = selected.filter((id) => id !== row._id);
+      setSelectedRow(null); // Clear the selected row when unselecting
+    }
+  
+    setSelected(newSelected);
+    setSelectedRow(row);
+  };
+  
   useEffect(() => {
     dispatch(getCustomOrders({ limit: 20, pageNumber: page + 1 }));
   }, [rowsPerPage, page]);
@@ -171,17 +205,19 @@ export default function CustomOrdersPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'status', label: 'Status' },
+                  { id: '_id', label: 'Order ID' },
+
                   { id: 'symbol', label: 'Symbol', align: 'center' },
+                  { id: 'createdAt', label: 'CreatedAt', align: 'center' },
+                  { id: 'status', label: 'Status' },
+                  { id: 'currentStatus', label: 'Current Status' },
                   { id: 'count', label: 'count' },
 
                   { id: 'name', label: 'name' },
                   { id: 'type', label: 'type' },
-                  { id: 'userId', label: 'User Id' },
 
-                  { id: '_id', label: '_id' },
-                  { id: 'contractAddress', label: 'Contract Address' },
-                  { id: 'pairAddress', label: 'Pair Address' },
+                  { id: 'updatedAt', label: 'Updated At' },
+                  { id: 'action', label: 'action' },
                 ]}
               />
               <TableBody>
@@ -194,11 +230,20 @@ export default function CustomOrdersPage() {
                       symbol={row?.symbol}
                       count={row?.count}
                       name={row?.name}
-                      type={row?.type}
-                      userId={row?.user_id}
+                      type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
+                      createdAt={row?.createdAt}
+                      updatedAt={row?.updatedAt}
+                      currentStatus={0}
+                      action={
+                        <MoreVert
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            handleDetailDialogOpen();
+                            vertClickHelper(row);
+                          }}
+                        />
+                      }
                       _id={row?._id}
-                      contractAddress={row?.contractAddress}
-                      pairAddress={row?.pairAddress}
                       selected={selected.indexOf(row._id) !== -1}
                       handleClick={(event) => handleClick(event, row._id)}
                     />
@@ -237,8 +282,8 @@ export default function CustomOrdersPage() {
         }}
       >
         <DialogTitle>Add a custom order</DialogTitle>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
-        {customOrdersState?.customOrdersLoading && <CircularProgress />}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {customOrdersState?.customOrdersLoading && <CircularProgress />}
         </div>
 
         <DialogContent>
@@ -263,6 +308,57 @@ export default function CustomOrdersPage() {
             Add
           </Button>
         </DialogActions>
+      </Dialog>
+
+
+
+
+
+
+
+
+      <Dialog
+        open={detailDialogOpen}
+        onClose={handleDetailDialogClose}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <DialogTitle>More Details</DialogTitle>
+        <div>
+          <DialogContent>
+            <DialogContentText>
+              <Stack   gap={'2px'}>
+                <Typography variant="subtitle1">Contaract Address: </Typography>
+                <Typography variant="p">{selectedRow?.contractAddress}</Typography>
+              </Stack>
+
+              <Stack
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1">Pair Address: </Typography>
+                <Typography variant="p">{selectedRow?.pairAddress}</Typography>
+              </Stack>
+
+              <Stack
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1">User ID: </Typography>
+                <Typography variant="p">{selectedRow?.user_id}</Typography>
+              </Stack>
+
+              
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDetailDialogClose}>Cancel</Button>
+          </DialogActions>
+        </div>
       </Dialog>
     </Container>
   );
