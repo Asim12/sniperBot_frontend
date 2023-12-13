@@ -154,8 +154,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notificationState.notifications.notifications
-              .filter((notification) => notification.read_status===false)
+            {notificationState?.notifications?.notifications?.filter((notification) => notification.read_status===false)
               .map((notification) => (
                 <NotificationItem key={notification.id} notification={notification} />
               ))}
@@ -169,8 +168,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-             {notificationState.notifications.notifications
-              .filter((notification) => notification.read_status===true)
+             {notificationState?.notifications?.notifications?.filter((notification) => notification.read_status===true)
               .map((notification) => (
                 <NotificationItem key={notification._id} notification={notification} />
               ))}
