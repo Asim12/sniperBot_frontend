@@ -31,7 +31,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { getSoldOrders } from 'src/redux/action';
-import { MoreVert } from '@mui/icons-material';
+import { MoreVert, Visibility } from '@mui/icons-material';
 // ----------------------------------------------------------------------
 
 export default function SoldOrdersPage() {
@@ -160,11 +160,11 @@ export default function SoldOrdersPage() {
       </Stack>
 
       <Card>
-        <OrdersTableToolbar
+        {/* <OrdersTableToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
-        />
+        /> */}
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
@@ -230,7 +230,7 @@ export default function SoldOrdersPage() {
                         amount={row?.amount}
                         chainId={row?.chain_id}
                         action={
-                          <MoreVert
+                          <Visibility
                             style={{ cursor: 'pointer' }}
                             onClick={() => {
                               handleDialogOpen();

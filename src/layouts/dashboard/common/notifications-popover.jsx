@@ -83,7 +83,7 @@ export default function NotificationsPopover() {
     '🚀 ~ file: notifications-popover.jsx:81 ~ NotificationsPopover ~ notificationState:',
     notificationState
   );
-  const totalUnRead = notificationState.notifications.notifications.filter((item) => item.read_status === false).length;
+  const totalUnRead = notificationState.notifications.notifications?.filter((item) => item.read_status === false).length;
 
   const [open, setOpen] = useState(null);
 

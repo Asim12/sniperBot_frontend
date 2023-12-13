@@ -11,7 +11,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import { CircularProgress } from '@mui/material';
 import { users } from 'src/_mock/user';
-import { MoreVert } from '@mui/icons-material';
+import { MoreVert, Visibility } from '@mui/icons-material';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -183,11 +183,11 @@ export default function CustomOrdersPage() {
       </Stack>
 
       <Card>
-        <OrdersTableToolbar
+        {/* <OrdersTableToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
-        />
+        /> */}
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
@@ -235,7 +235,7 @@ export default function CustomOrdersPage() {
                       updatedAt={row?.updatedAt}
                       currentStatus={0}
                       action={
-                        <MoreVert
+                        <Visibility
                           style={{ cursor: 'pointer' }}
                           onClick={() => {
                             handleDetailDialogOpen();

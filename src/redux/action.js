@@ -330,3 +330,59 @@ export const markAllasReadNotifications = createAsyncThunk(
   }
 );
 
+
+// graph actions
+
+export const getOpenBalanceGraphData = createAsyncThunk(
+  'openbalancegraph/fetchopenbalancegraph',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
+      const response = await axios.get('http://localhost:3000/api/openBalanceGraphWeekly', {
+        headers: {
+          'x-access-token': token,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    }
+  }
+);
+
+
+
+export const getSellBalanceGraphData = createAsyncThunk(
+  'setllbalancegraph/fetchsellbalancegraph',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
+      const response = await axios.get('http://localhost:3000/api/sellBalanceGraphWeekly', {
+        headers: {
+          'x-access-token': token,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    }
+  }
+);
+
+
+export const getProfitBalanceGraphData = createAsyncThunk(
+  'profitbalancegraph/fetchprofitbalancegraph',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
+      const response = await axios.get('http://localhost:3000/api/profitGraphWeekly', {
+        headers: {
+          'x-access-token': token,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    }
+  }
+);

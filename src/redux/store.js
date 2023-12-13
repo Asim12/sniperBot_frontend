@@ -8,6 +8,7 @@ import userReducer from './userSlice';
 import walletReducer from './walletSlice'
 import orderReducer from './orderSlice'
 import notificationReducer from './NotificationSlice'
+import graphReducer from './GraphSlice'
 
 const persistConfig = {
   key: 'root',
@@ -18,6 +19,7 @@ const persistedUserReducer = persistReducer(persistConfig, userReducer);
 const persistedWalletReducer = persistReducer(persistConfig, walletReducer);
 const persistedOrderReducer = persistReducer(persistConfig, orderReducer);
 const persistedNotificationReducer = persistReducer(persistConfig, notificationReducer);
+const persistedGraphReducer = persistReducer(persistConfig, graphReducer);
 
 
 const store = configureStore({
@@ -25,7 +27,8 @@ const store = configureStore({
     user: persistedUserReducer,
     wallet:persistedWalletReducer,
     order:persistedOrderReducer,
-    notification:persistedNotificationReducer
+    notification:persistedNotificationReducer,
+    graph:persistedGraphReducer
   },
 });
 
