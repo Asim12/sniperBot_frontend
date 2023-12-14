@@ -198,7 +198,7 @@ export default function SoldOrdersPage() {
                   { id: 'profitPercentage', label: 'Profit Percentage' },
                   { id: 'currentStatus', label: 'Current Status' },
 
-                  { id: 'chainId', label: 'Chain ID' },
+                  // { id: 'chainId', label: 'Chain ID' },
                   { id: 'updatedAt', label: 'Updated At' },
                   { id: 'action', label: 'Action' },
                   { id: '' },
@@ -228,7 +228,7 @@ export default function SoldOrdersPage() {
                         updatedAt={row?.updatedAt}
                         currentStatus={0}
                         amount={row?.amount}
-                        chainId={row?.chain_id}
+                        // chainId={row?.chain_id}
                         action={
                           <Visibility
                             style={{ cursor: 'pointer' }}

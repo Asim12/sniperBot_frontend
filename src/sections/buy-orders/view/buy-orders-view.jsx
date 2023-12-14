@@ -192,7 +192,7 @@ export default function BuyOrdersPage() {
                   { id: 'status', label: 'Status' },
                   { id: 'profitPercentage', label: 'Profit Percentage' },
                   { id: 'currentStatus', label: 'Current Status' },
-                  { id: 'chainId', label: 'Chain ID' },
+                  // { id: 'chainId', label: 'Chain ID' },
                   { id: 'updatedAt', label: 'Updated At' },
                   { id: 'Action', label: 'Action' },
                   { id: '' },
@@ -222,7 +222,7 @@ export default function BuyOrdersPage() {
                           }}
                         />}
                       amount={row?.amount}
-                      chainId={row?.chain_id}
+                      // chainId={row?.chain_id}
                       profitPercentage={row?.profit_percentage}
                       selected={selected.indexOf(row._id) !== -1}
                       handleClick={(event) => handleClick(event, row._id)}

@@ -31,7 +31,7 @@ export default function OrdersTableRow({
   pairAddress,
   userId,
   amount,
-  chainId,
+  // chainId,
   profitPercentage,
   updatedAt,
   createdAt,
@@ -74,7 +74,7 @@ export default function OrdersTableRow({
         <TableCell align="center">{status}</TableCell>
         <TableCell align="center">{profitPercentage}</TableCell>
         <TableCell  style={{color:currentStatus>0?"green":'red'}} align="center">{currentStatus}</TableCell>
-        <TableCell align="center">{chainId}</TableCell>
+        {/* <TableCell align="center">{chainId}</TableCell> */}
         <TableCell align="center">{formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}</TableCell>
         <TableCell align="center">{action}</TableCell>
 

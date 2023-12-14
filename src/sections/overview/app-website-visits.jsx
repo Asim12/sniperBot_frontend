@@ -47,10 +47,10 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
       <Box sx={{ p: 3, pb: 1 }}>
         <Chart
           dir="ltr"
-          type="line"
+          type={"line"}
           series={series}
           options={chartOptions}
-          width="100%"
+          width={"100%"}
           height={364}
         />
       </Box>

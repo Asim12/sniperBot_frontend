@@ -65,7 +65,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Current "
-            total={balances?.balance?.current_coin_balance}
+            total={balances?.balance?.current_coin_balance?balances?.balance?.current_coin_balance:null}
             color="success"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
@@ -74,7 +74,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Buy "
-            total={balances?.balance?.buy_order_balance}
+            total={balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance:null}
             color="info"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
@@ -83,7 +83,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Sold "
-            total={balances?.balance?.sell_order_balance}
+            total={balances?.balance?.sell_order_balance?balances?.balance?.sell_order_balance:null}
             color="warning"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
           />
@@ -92,7 +92,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Profit"
-            total={balances?.balance?.profit_balance}
+            total={balances?.balance?.profit_balance?balances?.balance?.profit_balance:null}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
@@ -107,10 +107,10 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
             title="Current Visits"
             chart={{
               series: [
-                { label: 'Current', value: balances?.balance?.buy_order_balance},
-                { label: 'Buy', value: balances?.balance?.buy_order_balance },
-                { label: 'Sold', value: balances?.balance?.sell_order_balance },
-                { label: 'Profit', value: balances?.balance?.profit_balance },
+                { label: 'Current', value: balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance:0},
+                { label: 'Buy', value: balances?.balance?.buy_order_balance? balances?.balance?.buy_order_balance:0 },
+                { label: 'Sold', value: balances?.balance?.sell_order_balance?balances?.balance?.sell_order_balance:0 },
+                { label: 'Profit', value: balances?.balance?.profit_balance?balances?.balance?.profit_balance:0 },
               ],
             }}
           />
