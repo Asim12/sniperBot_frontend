@@ -29,19 +29,39 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { getBuyOrders} from 'src/redux/action';
+import { getBuyOrders } from 'src/redux/action';
 import { MoreVert, Visibility } from '@mui/icons-material';
+import { io } from 'socket.io-client';
 
 // ----------------------------------------------------------------------
 
 export default function BuyOrdersPage() {
   const dispatch = useDispatch();
 
+  const [realTimePrices, setRealTimePrices] = useState({});
 
+  const socket = io('http://localhost:3000');
+  useEffect(() => {
+    // Subscribe to getPrices event with payload ['BTC', 'USDT', ...]
+    socket.emit('getPrices', ['FIA']);
+
+    // Handle incoming prices
+    socket.on('prices', (prices) => {
+      // Update the state with real-time prices
+      console.log('real time prices are', prices);
+
+      setRealTimePrices(prices);
+    });
+
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const buyOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
 
-  console.log('buy state',buyOrdersState.buyOrders)
+  console.log('buy state', buyOrdersState.buyOrders);
 
   const [page, setPage] = useState(0);
 
@@ -59,8 +79,6 @@ export default function BuyOrdersPage() {
 
   const [totalPages, setTotalPages] = useState(1);
 
-
-  
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -69,19 +87,18 @@ export default function BuyOrdersPage() {
     setDialogOpen(false);
   };
 
-  console.log('page number is ',page)
-
+  console.log('page number is ', page);
 
   useEffect(() => {
-    dispatch(getBuyOrders({limit:20,pageNumber:page+1}))
-  }, [rowsPerPage,page]);
+    dispatch(getBuyOrders({ limit: 20, pageNumber: page + 1 }));
+  }, [rowsPerPage, page]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
     if (id !== '') {
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(id);
-    } 
+    }
   };
 
   const handleSelectAllClick = (event) => {
@@ -89,19 +106,17 @@ export default function BuyOrdersPage() {
       const newSelecteds = buyOrdersState.buyOrders
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((order) => order._id);
-  
+
       setSelected(newSelecteds);
     } else {
       setSelected([]);
     }
   };
-  
-  
-  
+
   const vertClickHelper = (row) => {
     const selectedIndex = selected.indexOf(row._id);
     let newSelected = [];
-  
+
     if (selectedIndex === -1) {
       // If the row is not selected, add it to the selection
       newSelected = newSelected.concat(selected, row._id);
@@ -110,7 +125,7 @@ export default function BuyOrdersPage() {
       newSelected = selected.filter((id) => id !== row._id);
       setSelectedRow(null); // Clear the selected row when unselecting
     }
-  
+
     setSelected(newSelected);
     setSelectedRow(row);
   };
@@ -177,7 +192,12 @@ export default function BuyOrdersPage() {
               <OrdersTableHead
                 order={order}
                 // orderBy={orderBy}
-                rowCount={buyOrdersState.buyOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).length}
+                rowCount={
+                  buyOrdersState.buyOrders.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  ).length
+                }
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -186,6 +206,7 @@ export default function BuyOrdersPage() {
                   { id: 'symbol', label: 'Symbol', align: 'center' },
                   { id: 'logo', label: 'logo' },
                   { id: 'type', label: 'type' },
+                  { id: 'currentPrice', label: 'Current Price' },
                   { id: 'createdAt', label: 'Created At' },
                   { id: 'amount', label: 'Amount' },
                   { id: 'buyPrice', label: 'Buy Price' },
@@ -199,28 +220,43 @@ export default function BuyOrdersPage() {
                 ]}
               />
               <TableBody>
-              {buyOrdersState?.buyOrders?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                {buyOrdersState?.buyOrders
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
                     <OrdersTableRow
                       key={row._id}
-  
                       buyPrice={row?.buy_price}
                       symbol={row?.symbol}
                       logo={row?.logo}
                       status={row?.status}
+                      currentPrice={12}
                       _id={row?._id}
                       currentStatus={0}
                       type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
-
                       createdAt={row?.createdAt}
                       updatedAt={row?.updatedAt}
                       action={
-                        <Visibility
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => {
-                            handleDialogOpen();
-                            vertClickHelper(row);
-                          }}
-                        />}
+                        <Stack direction={'row'} alignItems={'center'}>
+                          <Visibility
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              handleDialogOpen();
+                              vertClickHelper(row);
+                            }}
+                          />
+                          <Button
+                            style={{
+                              backgroundColor: '#4CAF50', 
+                              color: 'white', 
+                              borderRadius: '5px', 
+                              padding: '5px 10px', 
+                              marginLeft: '10px', 
+                            }}
+                          >
+                            Sell
+                          </Button>
+                        </Stack>
+                      }
                       amount={row?.amount}
                       // chainId={row?.chain_id}
                       profitPercentage={row?.profit_percentage}
@@ -246,63 +282,52 @@ export default function BuyOrdersPage() {
           count={buyOrdersState.buyOrders.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[ 10,15, 25]}
+          rowsPerPageOptions={[10, 15, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+        />
       </Card>
 
-
       <Dialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <DialogTitle>More Details</DialogTitle>
-        <div>
-          <DialogContent>
-            <DialogContentText>
-              <Stack   gap={'2px'}>
-                <Typography variant="subtitle1">Contaract Address: </Typography>
-                <Typography variant="p">{selectedRow?.contractAddress}</Typography>
-              </Stack>
+      open={dialogOpen}
+      onClose={handleDialogClose}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <DialogTitle>More Details</DialogTitle>
+      <div>
+        <DialogContent>
+          <DialogContentText>
+            <Stack gap={'2px'} direction={{base:'column',md:'row'}}>
+              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Contaract Address: </Typography>
+              <Typography variant="body1" color={'#000'}>{selectedRow?.contractAddress}</Typography>
+            </Stack>
 
-              <Stack
-                style={{ marginTop: '1rem' }}
-                gap={'2px'}
-              >
-                <Typography variant="subtitle1">Pair Address: </Typography>
-                <Typography variant="p">{selectedRow?.pairAddress}</Typography>
-              </Stack>
+            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
+              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Pair Address: </Typography>
+              <Typography variant="body1" color={'#000'}>{selectedRow?.pairAddress}</Typography>
+            </Stack>
 
-              <Stack
-                style={{ marginTop: '1rem' }}
-                gap={'2px'}
-              >
-                <Typography variant="subtitle1">User ID: </Typography>
-                <Typography variant="p">{selectedRow?.user_id}</Typography>
-              </Stack>
+            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
+              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>User ID: </Typography>
+              <Typography variant="body1" color={'#000'}>{selectedRow?.user_id}</Typography>
+            </Stack>
 
-              <Stack
-                style={{ marginTop: '1rem' }}
-                gap={'2px'}
-              >
-                <Typography variant="subtitle1">Buy Transaction Hash: </Typography>
-                <Typography variant="p">{selectedRow?.buy_trasaction_hash}</Typography>
-              </Stack>
-
-             
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
-          </DialogActions>
-        </div>
-      </Dialog>
+            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
+              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Buy Transaction Hash: </Typography>
+              <Typography variant="body1" color={'#000'}>{selectedRow?.buy_trasaction_hash}</Typography>
+            </Stack>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+        </DialogActions>
+      </div>
+    </Dialog>
+  
     </Container>
   );
 }

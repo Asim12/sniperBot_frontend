@@ -38,7 +38,7 @@ export default function OrdersTableRow({
   type,
   userId,
   amount,
-  // chainId,
+  chainId,
   profitPercentage,
   handleActionClick,
   currentStatus,
@@ -85,7 +85,7 @@ action,
         <TableCell align="center" style={{color:currentStatus>0?"green":'red'}}>{currentStatus}</TableCell>
 
        
-        {/* <TableCell align="center">{chainId}</TableCell> */}
+        <TableCell align="center">{chainId}</TableCell>
         <TableCell align="center">{formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}</TableCell>
         <TableCell align="center">{action}</TableCell>
 

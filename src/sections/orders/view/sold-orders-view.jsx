@@ -198,7 +198,7 @@ export default function SoldOrdersPage() {
                   { id: 'profitPercentage', label: 'Profit Percentage' },
                   { id: 'currentStatus', label: 'Current Status' },
 
-                  // { id: 'chainId', label: 'Chain ID' },
+                  { id: 'chainId', label: 'Chain ID' },
                   { id: 'updatedAt', label: 'Updated At' },
                   { id: 'action', label: 'Action' },
                   { id: '' },
@@ -228,7 +228,7 @@ export default function SoldOrdersPage() {
                         updatedAt={row?.updatedAt}
                         currentStatus={0}
                         amount={row?.amount}
-                        // chainId={row?.chain_id}
+                        chainId={row?.chain_id}
                         action={
                           <Visibility
                             style={{ cursor: 'pointer' }}
@@ -281,41 +281,42 @@ export default function SoldOrdersPage() {
         <div>
           <DialogContent>
             <DialogContentText>
-              <Stack   gap={'2px'}>
-                <Typography variant="subtitle1">Contaract Address: </Typography>
-                <Typography variant="p">{selectedRow?.contractAddress}</Typography>
+              <Stack   direction={{base:'column',md:'row'}}  gap={'2px'}>
+                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Contaract Address: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.contractAddress}</Typography>
               </Stack>
 
               <Stack
                 style={{ marginTop: '1rem' }}
+                direction={{base:'column',md:'row'}}
                 gap={'2px'}
               >
-                <Typography variant="subtitle1">Pair Address: </Typography>
-                <Typography variant="p">{selectedRow?.pairAddress}</Typography>
+                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Pair Address: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.pairAddress}</Typography>
               </Stack>
 
-              <Stack
+              <Stack direction={{base:'column',md:'row'}}
                 style={{ marginTop: '1rem' }}
                 gap={'2px'}
               >
-                <Typography variant="subtitle1">User ID: </Typography>
-                <Typography variant="p">{selectedRow?.user_id}</Typography>
+                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>User ID: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.user_id}</Typography>
               </Stack>
 
-              <Stack
+              <Stack direction={{base:'column',md:'row'}}
                 style={{ marginTop: '1rem' }}
                 gap={'2px'}
               >
-                <Typography variant="subtitle1">Buy Transaction Hash: </Typography>
-                <Typography variant="p">{selectedRow?.buy_trasaction_hash}</Typography>
+                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Buy Transaction Hash: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.buy_trasaction_hash}</Typography>
               </Stack>
 
-              <Stack
+              <Stack direction={{base:'column',md:'row'}}
                 style={{ marginTop: '1rem' }}
                 gap={'2px'}
               >
-                <Typography variant="subtitle1">Sell Transaction Hash: </Typography>
-                <Typography variant="p">{selectedRow?.sell_trasaction_hash}</Typography>
+                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Sell Transaction Hash: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.sell_trasaction_hash}</Typography>
               </Stack>
             </DialogContentText>
           </DialogContent>

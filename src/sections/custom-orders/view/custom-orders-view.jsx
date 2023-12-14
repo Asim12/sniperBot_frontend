@@ -331,25 +331,25 @@ export default function CustomOrdersPage() {
         <div>
           <DialogContent>
             <DialogContentText>
-              <Stack   gap={'2px'}>
-                <Typography variant="subtitle1">Contaract Address: </Typography>
-                <Typography variant="p">{selectedRow?.contractAddress}</Typography>
+              <Stack direction={{base:'column',md:'row'}}   gap={'2px'}>
+                <Typography variant="subtitle1" color={'#000'} fontWeight={'bold'}>Contaract Address: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.contractAddress}</Typography>
               </Stack>
 
-              <Stack
+              <Stack direction={{base:'column',md:'row'}}
                 style={{ marginTop: '1rem' }}
                 gap={'2px'}
               >
-                <Typography variant="subtitle1">Pair Address: </Typography>
-                <Typography variant="p">{selectedRow?.pairAddress}</Typography>
+                <Typography variant="subtitle1" color={'#000'} fontWeight={'bold'}>Pair Address: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.pairAddress}</Typography>
               </Stack>
 
-              <Stack
+              <Stack direction={{base:'column',md:'row'}}
                 style={{ marginTop: '1rem' }}
                 gap={'2px'}
               >
-                <Typography variant="subtitle1">User ID: </Typography>
-                <Typography variant="p">{selectedRow?.user_id}</Typography>
+                <Typography variant="subtitle1" color={'#000'} fontWeight={'bold'}>User ID: </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.user_id}</Typography>
               </Stack>
 
               

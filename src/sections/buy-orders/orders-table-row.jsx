@@ -37,6 +37,7 @@ export default function OrdersTableRow({
   createdAt,
   type,
   currentStatus,
+  currentPrice,
   action,
   handleClick,
 }) {
@@ -66,6 +67,7 @@ export default function OrdersTableRow({
 
         <TableCell align="center">{logo}</TableCell>
         <TableCell align="center">{type}</TableCell>
+        <TableCell align="center">{currentPrice}</TableCell>
         <TableCell>{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</TableCell>
 
         <TableCell align="center">{amount}</TableCell>
