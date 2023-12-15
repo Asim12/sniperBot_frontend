@@ -24,7 +24,7 @@ const userSlice = createSlice({
       state.last_name = action.payload.verify.last_name;
       state.email = action.payload.verify.email;
       state.role = action.payload.verify.role;
-      state.loginLoading=false
+      state.loginLoading = false;
     },
 
     startLoginLoading: (state) => {
@@ -39,47 +39,32 @@ const userSlice = createSlice({
     stopSignupLoading: (state) => {
       state.signupLoading = false; // Set signup loading to false when stopping signup operation
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(login.pending, (state) => {
+      state.loginLoading = true;
+    });
+    builder.addCase(login.fulfilled, (state, action) => {
+      console.log('user slice payload', action.payload);
+      state.first_name = action.payload.verify.first_name;
+      state.last_name = action.payload.verify.last_name;
+      state.email = action.payload.verify.email;
+      state.role = action.payload.verify.role;
+      state.loginLoading = false;
+    });
+    builder.addCase(login.rejected, (state) => {
+      state.loginLoading = false;
+    });
 
-    
-
-    extraReducers: (builder) => {
-      builder.addCase(login.pending, (state) => {
-        state.loginLoading = true;
-      });
-      builder.addCase(login.fulfilled, (state, action) => {
-        console.log('login slice payload',action.payload)
-        state.loginLoading = false;
-        console.log('action payload is ', action.payload);
-        state.first_name = action.payload.verify.first_name;
-        state.last_name = action.payload.verify.last_name;
-        state.email = action.payload.verify.email;
-        state.role = action.payload.verify.role;
-        state.loginLoading = false;
-
-
-      });
-      builder.addCase(login.rejected, (state) => {
-        state.loginLoading = false;
-      });
-
-
-
-
-
-
-      builder.addCase(registerUser.pending, (state) => {
-        state.signupLoading = true;
-      });
-      builder.addCase(registerUser.fulfilled, (state, action) => {
-       
-        state.signupLoading = false;
-
-
-      });
-      builder.addCase(registerUser.rejected, (state) => {
-        state.signupLoading = false;
-      });
-    },
+    builder.addCase(registerUser.pending, (state) => {
+      state.signupLoading = true;
+    });
+    builder.addCase(registerUser.fulfilled, (state, action) => {
+      state.signupLoading = false;
+    });
+    builder.addCase(registerUser.rejected, (state) => {
+      state.signupLoading = false;
+    });
   },
 });
 

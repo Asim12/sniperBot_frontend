@@ -338,7 +338,7 @@ export default function CustomOrdersPage() {
                 <Typography variant="p" color={'#000'}>{selectedRow?.pairAddress}</Typography>
               </Stack>
 
-              <Stack direction={{base:'column',md:'row'}}
+              <Stack direction={{base:'column',md:'row'}} 
                 style={{ marginTop: '1rem' }}
                 gap={'2px'}
               >

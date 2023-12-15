@@ -167,6 +167,9 @@ export default function AccountPopover() {
           <MenuItem key={option.label} onClick={(e)=>{
             if(e.target.textContent==='My Wallet'){
               handleDialogOpen()
+            }else  if(e.target.textContent==='Profile'){
+              router.push('/profile')
+
             }else{
 
               handleClose()

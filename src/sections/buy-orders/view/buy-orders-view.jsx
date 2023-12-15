@@ -38,26 +38,9 @@ import { io } from 'socket.io-client';
 export default function BuyOrdersPage() {
   const dispatch = useDispatch();
 
-  const [realTimePrices, setRealTimePrices] = useState({});
+  const [realTimePrices, setRealTimePrices] = useState([{}]);
 
-  const socket = io('http://localhost:3000');
-  useEffect(() => {
-    // Subscribe to getPrices event with payload ['BTC', 'USDT', ...]
-    socket.emit('getPrices', ['FIA']);
 
-    // Handle incoming prices
-    socket.on('prices', (prices) => {
-      // Update the state with real-time prices
-      console.log('real time prices are', prices);
-
-      setRealTimePrices(prices);
-    });
-
-    // Clean up the socket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   const buyOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
 
@@ -92,6 +75,31 @@ export default function BuyOrdersPage() {
   useEffect(() => {
     dispatch(getBuyOrders({ limit: 20, pageNumber: page + 1 }));
   }, [rowsPerPage, page]);
+
+  const socket = io('http://localhost:3000');
+  const uniqueSymbols = Array.from(
+    new Set(buyOrdersState.buyOrders.map((order) => order.symbol))
+  );
+  useEffect(() => {
+    // Extract unique symbols from buyOrdersState.buyOrders
+   
+
+    console.log('unique symbols',uniqueSymbols)
+    // Subscribe to getPrices event with uniqueSymbols payload
+    socket.emit('getPrices', uniqueSymbols);
+
+    // Handle incoming prices
+    socket.on('prices', (prices) => {
+      // Update the state with real-time prices
+      console.log('real time prices are', prices);
+      setRealTimePrices(prices);
+    });
+
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, [buyOrdersState.buyOrders])
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -208,7 +216,7 @@ export default function BuyOrdersPage() {
                   { id: 'buyPrice', label: 'Buy Price' },
                   { id: 'currentPrice', label: 'Current Price' },
                   { id: 'profitPercentage', label: 'sell percentage' },
-                  { id: 'currentStatus', label: 'Current percentage' },
+                  { id: 'currentStatus', label: 'Current Status' },
                   // { id: 'logo', label: 'logo' },
                   // { id: 'amount', label: 'Amount' },
                   // { id: 'chainId', label: 'Chain ID' },
@@ -222,16 +230,31 @@ export default function BuyOrdersPage() {
               <TableBody>
                 {buyOrdersState?.buyOrders
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
+                  .map((row,rowIndex) => {
+
+                    const currentSymbol = row?.symbol;
+                    const matchingSymbolPrice = realTimePrices?.find(item => item.symbol === currentSymbol);
+
+                    const currentSymbolPrice = matchingSymbolPrice ? matchingSymbolPrice.price : null;
+
+    
+    // Check if the symbol is present in the unique symbols set
+
+    // If the symbol is in the set, get the corresponding real-time price; otherwise, use null
+    return(
+
+    
                     <OrdersTableRow
                       key={row._id}
                       buyPrice={row?.buy_price}
                       symbol={row?.symbol}
                       logo={row?.logo}
                       status={row?.status}
-                      currentPrice={12}
+                      currentPrice={
+                        currentSymbolPrice
+                      }
                       _id={row?._id}
-                      currentStatus={0}
+                      currentStatus={ ((row.sell_price - row.buy_price)/ ((row.sell_price + row.buy_price)/2))*100 }
                       type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
                       createdAt={row?.createdAt}
                       updatedAt={row?.updatedAt}
@@ -263,7 +286,7 @@ export default function BuyOrdersPage() {
                       selected={selected.indexOf(row._id) !== -1}
                       handleClick={(event) => handleClick(event, row._id)}
                     />
-                  ))}
+                    )})}
 
                 {/* <TableEmptyRows
                   height={77}

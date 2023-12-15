@@ -38,6 +38,7 @@ export default function OrdersTableRow({
   type,
   currentStatus,
   currentPrice,
+  sellPercentage,
   action,
   handleClick,
 }) {
@@ -51,6 +52,7 @@ export default function OrdersTableRow({
     setOpen(null);
   };
 
+    console.log('current pirice is ',currentPrice)
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
