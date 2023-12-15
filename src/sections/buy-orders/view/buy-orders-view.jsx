@@ -203,18 +203,18 @@ export default function BuyOrdersPage() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: '_id', label: 'Order ID' },
+                  { id: 'createdAt', label: 'Created' },
                   { id: 'symbol', label: 'Symbol', align: 'center' },
-                  { id: 'logo', label: 'logo' },
-                  { id: 'type', label: 'type' },
-                  { id: 'currentPrice', label: 'Current Price' },
-                  { id: 'createdAt', label: 'Created At' },
-                  { id: 'amount', label: 'Amount' },
                   { id: 'buyPrice', label: 'Buy Price' },
-                  { id: 'status', label: 'Status' },
-                  { id: 'profitPercentage', label: 'Profit Percentage' },
-                  { id: 'currentStatus', label: 'Current Status' },
+                  { id: 'currentPrice', label: 'Current Price' },
+                  { id: 'profitPercentage', label: 'sell percentage' },
+                  { id: 'currentStatus', label: 'Current percentage' },
+                  // { id: 'logo', label: 'logo' },
+                  // { id: 'amount', label: 'Amount' },
                   // { id: 'chainId', label: 'Chain ID' },
-                  { id: 'updatedAt', label: 'Updated At' },
+                  { id: 'status', label: 'Status' },
+                  { id: 'type', label: 'type' },
+                  { id: 'updatedAt', label: 'Updated' },
                   { id: 'Action', label: 'Action' },
                   { id: '' },
                 ]}
@@ -320,6 +320,13 @@ export default function BuyOrdersPage() {
               <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Buy Transaction Hash: </Typography>
               <Typography variant="body1" color={'#000'}>{selectedRow?.buy_trasaction_hash}</Typography>
             </Stack>
+
+
+            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
+              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Buy Amount: </Typography>
+              <Typography variant="body1" color={'#000'}>{selectedRow?.amount}</Typography>
+            </Stack>
+
           </DialogContentText>
         </DialogContent>
         <DialogActions>

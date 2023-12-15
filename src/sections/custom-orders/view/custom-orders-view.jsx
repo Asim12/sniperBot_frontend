@@ -206,17 +206,11 @@ export default function CustomOrdersPage() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: '_id', label: 'Order ID' },
-
+                  { id: 'created', label: 'Created', align: 'center' },
                   { id: 'symbol', label: 'Symbol', align: 'center' },
-                  { id: 'createdAt', label: 'CreatedAt', align: 'center' },
                   { id: 'status', label: 'Status' },
-                  { id: 'currentStatus', label: 'Current Status' },
-                  { id: 'count', label: 'count' },
-
-                  { id: 'name', label: 'name' },
                   { id: 'type', label: 'type' },
-
-                  { id: 'updatedAt', label: 'Updated At' },
+                  { id: 'updated', label: 'Updated' },
                   { id: 'action', label: 'action' },
                 ]}
               />

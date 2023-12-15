@@ -183,23 +183,15 @@ export default function SoldOrdersPage() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: '_id', label: 'Order ID' },
+                  { id: 'createdAt', label: 'Created' },
                   { id: 'symbol', label: 'Symbol', align: 'center' },
-                  { id: 'logo', label: 'logo' },
                   { id: 'buyPrice', label: 'Buy Price' },
-                  { id: 'type', label: 'type' },
-                  { id: 'createdAt', label: 'Created At' },
-
-                  { id: 'sellPrice', label: 'Sell Price' },
-                  { id: 'profitAmount', label: 'Profit Amount' },
-
-                  { id: 'amount', label: 'Amount' },
-
+                  { id: 'sellPrice', label: 'sold Price' },
+                  { id: 'sellPercentage', label: 'sell percentage' },
+                  { id: 'soldPercentage', label: 'sold percentage' },
                   { id: 'status', label: 'Status' },
-                  { id: 'profitPercentage', label: 'Profit Percentage' },
-                  { id: 'currentStatus', label: 'Current Status' },
-
-                  { id: 'chainId', label: 'Chain ID' },
-                  { id: 'updatedAt', label: 'Updated At' },
+                  { id: 'type', label: 'type' },
+                  { id: 'updatedAt', label: 'Updated' },
                   { id: 'action', label: 'Action' },
                   { id: '' },
                 ]}
@@ -226,7 +218,7 @@ export default function SoldOrdersPage() {
                         type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
                         createdAt={row?.createdAt}
                         updatedAt={row?.updatedAt}
-                        currentStatus={0}
+                        soldPercentage={ ((row.sell_price - row.buy_price)/ ((row.sell_price + row.buy_price)/2))*100 }
                         amount={row?.amount}
                         chainId={row?.chain_id}
                         action={
@@ -315,6 +307,14 @@ export default function SoldOrdersPage() {
                 style={{ marginTop: '1rem' }}
                 gap={'2px'}
               >
+                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Buy Amount </Typography>
+                <Typography variant="p" color={'#000'}>{selectedRow?.Amount}</Typography>
+              </Stack>
+
+              <Stack direction={{base:'column',md:'row'}}
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+             >
                 <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Sell Transaction Hash: </Typography>
                 <Typography variant="p" color={'#000'}>{selectedRow?.sell_trasaction_hash}</Typography>
               </Stack>

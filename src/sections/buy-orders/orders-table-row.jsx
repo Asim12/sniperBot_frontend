@@ -57,31 +57,23 @@ export default function OrdersTableRow({
         <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
-
-      
-
-
-
         <TableCell align="center">{_id}</TableCell>
-        <TableCell align="center">{symbol}</TableCell>
-
-        <TableCell align="center">{logo}</TableCell>
-        <TableCell align="center">{type}</TableCell>
-        <TableCell align="center">{currentPrice}</TableCell>
         <TableCell>{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</TableCell>
-
-        <TableCell align="center">{amount}</TableCell>
+        <TableCell align="center">{symbol}</TableCell>
         <TableCell>{buyPrice}</TableCell>
-
-        <TableCell align="center">{status}</TableCell>
+        <TableCell align="center">{currentPrice}</TableCell>
         <TableCell align="center">{profitPercentage}</TableCell>
         <TableCell  style={{color:currentStatus>0?"green":'red'}} align="center">{currentStatus}</TableCell>
-        {/* <TableCell align="center">{chainId}</TableCell> */}
+        <TableCell align="center">{status}</TableCell>
+        <TableCell align="center">{type}</TableCell>
         <TableCell align="center">{formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}</TableCell>
         <TableCell align="center">{action}</TableCell>
 
+        {/* <TableCell align="center">{logo}</TableCell> */}
 
+        {/* <TableCell align="center">{amount}</TableCell> */}
 
+        {/* <TableCell align="center">{chainId}</TableCell> */}
         {/* <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />
