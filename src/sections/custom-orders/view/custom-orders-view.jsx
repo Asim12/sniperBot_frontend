@@ -12,9 +12,10 @@ import TablePagination from '@mui/material/TablePagination';
 import { CircularProgress } from '@mui/material';
 import { users } from 'src/_mock/user';
 import { MoreVert, Visibility } from '@mui/icons-material';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
+
+import {Link} from '@mui/material';
 
 import TableNoData from '../table-no-data';
 import OrdersTableRow from '../orders-table-row';
@@ -327,7 +328,12 @@ export default function CustomOrdersPage() {
             <DialogContentText>
               <Stack direction={{base:'column',md:'row'}}   gap={'2px'}>
                 <Typography variant="subtitle1" color={'#000'} fontWeight={'bold'}>Contaract Address: </Typography>
-                <Typography variant="p" color={'#000'}>{selectedRow?.contractAddress}</Typography>
+                <Typography variant="p" color={'#000'}>
+                  
+                <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
+                    {selectedRow?.contractAddress}
+                  </Link>
+                </Typography>
               </Stack>
 
               <Stack direction={{base:'column',md:'row'}}

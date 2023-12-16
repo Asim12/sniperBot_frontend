@@ -4,52 +4,25 @@ import { login, registerUser } from './action';
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    first_name: '',
-    last_name: '',
-    email: '',
-    role: '',
+  
     loginLoading: false, // Separate loading state for login
     signupLoading: false, // Separate loading state for signup
-  },
-  reducers: {
-    setSignupUser: (state) => {
-      state.signupLoading = false;
-      // Handle the response for signup as needed
-      // Update the state with the relevant information from the signup response
-    },
+    userData:[]
 
-    setUser: (state, action) => {
-      console.log('action payload is ', action.payload);
-      state.first_name = action.payload.verify.first_name;
-      state.last_name = action.payload.verify.last_name;
-      state.email = action.payload.verify.email;
-      state.role = action.payload.verify.role;
-      state.loginLoading = false;
-    },
-
-    startLoginLoading: (state) => {
-      state.loginLoading = true; // Set login loading to true when starting login operation
-    },
-    stopLoginLoading: (state) => {
-      state.loginLoading = false; // Set login loading to false when stopping login operation
-    },
-    startSignupLoading: (state) => {
-      state.signupLoading = true; // Set signup loading to true when starting signup operation
-    },
-    stopSignupLoading: (state) => {
-      state.signupLoading = false; // Set signup loading to false when stopping signup operation
-    },
   },
+
+  reducers:{
+
+  },
+
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
       state.loginLoading = true;
     });
     builder.addCase(login.fulfilled, (state, action) => {
+      state.loginLoading=true;
       console.log('user slice payload', action.payload);
-      state.first_name = action.payload.verify.first_name;
-      state.last_name = action.payload.verify.last_name;
-      state.email = action.payload.verify.email;
-      state.role = action.payload.verify.role;
+      state.userData=action.payload.verify;
       state.loginLoading = false;
     });
     builder.addCase(login.rejected, (state) => {
@@ -69,12 +42,7 @@ const userSlice = createSlice({
 });
 
 export const {
-  setUser,
-  setSignupUser,
-  startLoginLoading,
-  stopLoginLoading,
-  startSignupLoading,
-  stopSignupLoading,
+  signupLoading,loginLoading
 } = userSlice.actions;
 
 export default userSlice.reducer;

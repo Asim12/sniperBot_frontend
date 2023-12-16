@@ -32,6 +32,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { getSoldOrders } from 'src/redux/action';
 import { MoreVert, Visibility } from '@mui/icons-material';
+import { Link } from '@mui/material';
 // ----------------------------------------------------------------------
 
 export default function SoldOrdersPage() {
@@ -275,7 +276,9 @@ export default function SoldOrdersPage() {
             <DialogContentText>
               <Stack   direction={{base:'column',md:'row'}}  gap={'2px'}>
                 <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Contaract Address: </Typography>
-                <Typography variant="p" color={'#000'}>{selectedRow?.contractAddress}</Typography>
+                <Typography variant="p" color={'#000'}> <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
+                    {selectedRow?.contractAddress}
+                  </Link></Typography>
               </Stack>
 
               <Stack
@@ -300,7 +303,9 @@ export default function SoldOrdersPage() {
                 gap={'2px'}
               >
                 <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Buy Transaction Hash: </Typography>
-                <Typography variant="p" color={'#000'}>{selectedRow?.buy_trasaction_hash}</Typography>
+                <Typography variant="p" color={'#000'}> <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
+                    {selectedRow?.buy_transaction_hash}
+                  </Link></Typography>
               </Stack>
 
               <Stack direction={{base:'column',md:'row'}}
@@ -316,7 +321,9 @@ export default function SoldOrdersPage() {
                 gap={'2px'}
              >
                 <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Sell Transaction Hash: </Typography>
-                <Typography variant="p" color={'#000'}>{selectedRow?.sell_trasaction_hash}</Typography>
+                <Typography variant="p" color={'#000'}>{ <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
+                    {selectedRow?.sell_transaction_hash}
+                  </Link>}</Typography>
               </Stack>
             </DialogContentText>
           </DialogContent>

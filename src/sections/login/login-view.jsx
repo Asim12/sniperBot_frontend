@@ -23,6 +23,9 @@ import { useSelector } from 'react-redux';
 import { bgGradient } from 'src/theme/css';
 
 import Logo from 'src/components/logo';
+import Avatar from '@mui/material/Avatar';
+import logoImg from '../../images/logo.png'
+
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -126,13 +129,11 @@ export default function LoginView() {
         height: 1,
       }}
     >
-      <Logo
-        sx={{
-          position: 'fixed',
-          top: { xs: 16, md: 24 },
-          left: { xs: 16, md: 24 },
-        }}
-      />
+    <Avatar
+    src={logoImg} // Replace with the actual path or URL of your logo
+    alt="Logo"
+    sx={{ mt: 3, ml: 4, width: 48, height: 48 }} // Adjust the styling as needed
+  />
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
 

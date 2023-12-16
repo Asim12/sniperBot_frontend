@@ -32,6 +32,7 @@ import { useSelector } from 'react-redux';
 import { getBuyOrders } from 'src/redux/action';
 import { MoreVert, Visibility } from '@mui/icons-material';
 import { io } from 'socket.io-client';
+import { Link } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -39,8 +40,6 @@ export default function BuyOrdersPage() {
   const dispatch = useDispatch();
 
   const [realTimePrices, setRealTimePrices] = useState([{}]);
-
-
 
   const buyOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
 
@@ -62,6 +61,8 @@ export default function BuyOrdersPage() {
 
   const [totalPages, setTotalPages] = useState(1);
 
+ 
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -77,14 +78,11 @@ export default function BuyOrdersPage() {
   }, [rowsPerPage, page]);
 
   const socket = io('http://localhost:3000');
-  const uniqueSymbols = Array.from(
-    new Set(buyOrdersState.buyOrders.map((order) => order.symbol))
-  );
+  const uniqueSymbols = Array.from(new Set(buyOrdersState.buyOrders.map((order) => order.symbol)));
   useEffect(() => {
     // Extract unique symbols from buyOrdersState.buyOrders
-   
 
-    console.log('unique symbols',uniqueSymbols)
+    console.log('unique symbols', uniqueSymbols);
     // Subscribe to getPrices event with uniqueSymbols payload
     socket.emit('getPrices', uniqueSymbols);
 
@@ -99,7 +97,7 @@ export default function BuyOrdersPage() {
     return () => {
       socket.disconnect();
     };
-  }, [buyOrdersState.buyOrders])
+  }, [buyOrdersState.buyOrders]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -230,63 +228,66 @@ export default function BuyOrdersPage() {
               <TableBody>
                 {buyOrdersState?.buyOrders
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row,rowIndex) => {
-
+                  .map((row, rowIndex) => {
                     const currentSymbol = row?.symbol;
-                    const matchingSymbolPrice = realTimePrices?.find(item => item.symbol === currentSymbol);
+                    const matchingSymbolPrice = realTimePrices?.find(
+                      (item) => item.symbol === currentSymbol
+                    );
 
-                    const currentSymbolPrice = matchingSymbolPrice ? matchingSymbolPrice.price : null;
+                    const currentSymbolPrice = matchingSymbolPrice
+                      ? matchingSymbolPrice.price
+                      : null;
 
-    
-    // Check if the symbol is present in the unique symbols set
+                    // Check if the symbol is present in the unique symbols set
 
-    // If the symbol is in the set, get the corresponding real-time price; otherwise, use null
-    return(
-
-    
-                    <OrdersTableRow
-                      key={row._id}
-                      buyPrice={row?.buy_price}
-                      symbol={row?.symbol}
-                      logo={row?.logo}
-                      status={row?.status}
-                      currentPrice={
-                        currentSymbolPrice
-                      }
-                      _id={row?._id}
-                      currentStatus={ ((row.sell_price - row.buy_price)/ ((row.sell_price + row.buy_price)/2))*100 }
-                      type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
-                      createdAt={row?.createdAt}
-                      updatedAt={row?.updatedAt}
-                      action={
-                        <Stack direction={'row'} alignItems={'center'}>
-                          <Visibility
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => {
-                              handleDialogOpen();
-                              vertClickHelper(row);
-                            }}
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: '#4CAF50', 
-                              color: 'white', 
-                              borderRadius: '5px', 
-                              padding: '5px 10px', 
-                              marginLeft: '10px', 
-                            }}
-                          >
-                            Sell
-                          </Button>
-                        </Stack>
-                      }
-                      amount={row?.amount}
-                      // chainId={row?.chain_id}
-                      profitPercentage={row?.profit_percentage}
-                      selected={selected.indexOf(row._id) !== -1}
-                      handleClick={(event) => handleClick(event, row._id)}
-                    />
-                    )})}
+                    // If the symbol is in the set, get the corresponding real-time price; otherwise, use null
+                    return (
+                      <OrdersTableRow
+                        key={row._id}
+                        buyPrice={row?.buy_price}
+                        symbol={row?.symbol}
+                        logo={row?.logo}
+                        status={row?.status}
+                        currentPrice={currentSymbolPrice}
+                        _id={row?._id}
+                        currentStatus={
+                          (((currentSymbolPrice- row.buy_price) /
+                            ((currentSymbolPrice+ row.buy_price) / 2)) *
+                          100).toFixed(2)
+                        }
+                        type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
+                        createdAt={row?.createdAt}
+                        updatedAt={row?.updatedAt}
+                        action={
+                          <Stack direction={'row'} alignItems={'center'}>
+                            <Visibility
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => {
+                                handleDialogOpen();
+                                vertClickHelper(row);
+                              }}
+                            />
+                            <Button
+                              style={{
+                                backgroundColor: '#4CAF50',
+                                color: 'white',
+                                borderRadius: '5px',
+                                padding: '5px 10px',
+                                marginLeft: '10px',
+                              }}
+                            >
+                              Sell
+                            </Button>
+                          </Stack>
+                        }
+                        amount={row?.amount}
+                        // chainId={row?.chain_id}
+                        profitPercentage={row?.profit_percentage}
+                        selected={selected.indexOf(row._id) !== -1}
+                        handleClick={(event) => handleClick(event, row._id)}
+                      />
+                    );
+                  })}
 
                 {/* <TableEmptyRows
                   height={77}
@@ -311,53 +312,90 @@ export default function BuyOrdersPage() {
       </Card>
 
       <Dialog
-      open={dialogOpen}
-      onClose={handleDialogClose}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <DialogTitle>More Details</DialogTitle>
-      <div>
-        <DialogContent>
-          <DialogContentText>
-            <Stack gap={'2px'} direction={{base:'column',md:'row'}}>
-              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Contaract Address: </Typography>
-              <Typography variant="body1" color={'#000'}>{selectedRow?.contractAddress}</Typography>
-            </Stack>
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <DialogTitle>More Details</DialogTitle>
+        <div>
+          <DialogContent>
+            <DialogContentText>
+              <Stack gap={'2px'} direction={{ base: 'column', md: 'row' }}>
+                <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>
+                  Contaract Address:{' '}
+                </Typography>
+                <Typography variant="body1" color={'#000'}>
+                  <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
+                    {selectedRow?.contractAddress}
+                  </Link>
+                </Typography>
+              </Stack>
 
-            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
-              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Pair Address: </Typography>
-              <Typography variant="body1" color={'#000'}>{selectedRow?.pairAddress}</Typography>
-            </Stack>
+              <Stack
+                direction={{ base: 'column', md: 'row' }}
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>
+                  Pair Address:{' '}
+                </Typography>
+                <Typography variant="body1" color={'#000'}>
+                  {selectedRow?.pairAddress}
+                </Typography>
+              </Stack>
 
-            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
-              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>User ID: </Typography>
-              <Typography variant="body1" color={'#000'}>{selectedRow?.user_id}</Typography>
-            </Stack>
+              <Stack
+                direction={{ base: 'column', md: 'row' }}
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>
+                  User ID:{' '}
+                </Typography>
+                <Typography variant="body1" color={'#000'}>
+                  {selectedRow?.user_id}
+                </Typography>
+              </Stack>
 
-            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
-              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Buy Transaction Hash: </Typography>
-              <Typography variant="body1" color={'#000'}>{selectedRow?.buy_trasaction_hash}</Typography>
-            </Stack>
+              <Stack
+                direction={{ base: 'column', md: 'row' }}
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>
+                  Buy Transaction Hash:{' '}
+                </Typography>
+                <Typography variant="body1" color={'#000'}>
+                <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
+                    {selectedRow?.buy_trasaction_hash}
+                  </Link>
+                </Typography>
+              </Stack>
 
-
-            <Stack direction={{base:'column',md:'row'}} style={{ marginTop: '1rem' }} gap={'2px'}>
-              <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>Buy Amount: </Typography>
-              <Typography variant="body1" color={'#000'}>{selectedRow?.amount}</Typography>
-            </Stack>
-
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-        </DialogActions>
-      </div>
-    </Dialog>
-  
+              <Stack
+                direction={{ base: 'column', md: 'row' }}
+                style={{ marginTop: '1rem' }}
+                gap={'2px'}
+              >
+                <Typography variant="subtitle1" fontWeight="bold" color={'#000'}>
+                  Buy Amount:{' '}
+                </Typography>
+                <Typography variant="body1" color={'#000'}>
+                  {selectedRow?.amount}
+                </Typography>
+              </Stack>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>Cancel</Button>
+          </DialogActions>
+        </div>
+      </Dialog>
     </Container>
   );
 }

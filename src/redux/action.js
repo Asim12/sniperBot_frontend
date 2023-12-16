@@ -1,14 +1,7 @@
 import axios from 'axios';
 import { showToast } from 'src/components/snackbar/toastHelper';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  setSignupUser,
-  setUser,
-  startLoginLoading,
-  stopLoginLoading,
-  startSignupLoading,
-  stopSignupLoading,
-} from './userSlice';
+
 import { setWallet, startLoading, stopLoading,resetWalletState } from './walletSlice';
 import { customOrdersLoading, setSoldOrders } from './orderSlice';
 
@@ -18,7 +11,6 @@ export const login = createAsyncThunk('user/login', async ({ email, password,rou
     // Make the API call to login
     console.log('zain');
     console.log('Backend URL:', 'localhost:3000');
-    dispatch(startLoginLoading());
 
     const response = await axios.post('http://localhost:3000/api/login', {
       // Your login payload
@@ -41,16 +33,13 @@ export const login = createAsyncThunk('user/login', async ({ email, password,rou
   } catch (error) {
     showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
     return { error: error.message };
-  } finally {
-    dispatch(stopLoginLoading());
-  }
+  } 
 });
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ firstName, lastName, email, password,router }, { dispatch }) => {
     try {
-      dispatch(startSignupLoading());
 
       const response = await axios.post('http://localhost:3000/api/register', {
         first_name: firstName,
@@ -69,30 +58,20 @@ export const registerUser = createAsyncThunk(
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
 
       throw error; // Re-throw the error to mark the thunk as rejected
-    } finally {
-      dispatch(stopSignupLoading());
-    }
+    } 
   }
 );
 
 export const logoutUser = async (dispatch, router) => {
   try {
     // Make the API call to login
-    const data = {
-      verify: {
-        first_name: '',
-        last_name: '',
-        email: '',
-        role: '',
-      },
-    };
+   
 
     // Store the token in local storage
     localStorage.removeItem('token');
-    dispatch(setUser(data));
     router.push('/login');
+    return;
 
-    return { data };
   } catch (error) {
     // toast.error('Something went wrong');
     console.log('erro from logout', error);

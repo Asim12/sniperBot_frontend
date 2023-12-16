@@ -56,6 +56,8 @@ export default function AccountPopover() {
   const router=useRouter()
   const passwordRef = useRef(null);
   const walletState = useSelector((state) => state.wallet);
+  const userState=useSelector((state)=>state.user)
+   console.log('user state',userState)
   console.log('wallet state',walletState)
 
 
@@ -154,10 +156,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {userState?.userData?.first_name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {userState?.userData?.email}
           </Typography>
         </Box>
 
@@ -169,6 +171,9 @@ export default function AccountPopover() {
               handleDialogOpen()
             }else  if(e.target.textContent==='Profile'){
               router.push('/profile')
+
+            }else  if(e.target.textContent==='Home'){
+              router.push('/')
 
             }else{
 

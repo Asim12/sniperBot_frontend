@@ -4,7 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import {store,persistor} from './redux/store';
+import {persistStore} from 'redux-persist';
+import {store} from './redux/store'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './app';
@@ -12,13 +13,13 @@ import App from './app';
 // ----------------------------------------------------------------------
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
+let persistor=persistStore(store)
 root.render(
   <HelmetProvider>
     <BrowserRouter>
       <Suspense>
         <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+        <PersistGate  persistor={persistor}>
 
           <ToastContainer/>
         <App />

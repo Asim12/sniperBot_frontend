@@ -29,12 +29,12 @@ const profilePageStyles = {
 };
 
 const ProfilePage = () => {
-  const userState = useSelector((state) => state.user);
+  const userState=useSelector((state)=>state.user)
 
   console.log('user state is', userState);
 
   // Check if user data exists
-  const isUserDataAvailable = Boolean(userState?.first_name && userState?.last_name);
+  const isUserDataAvailable = Boolean(userState?.userData?.first_name && userState?.userData?.last_name);
 
   return (
     <Container style={profilePageStyles.root}>
@@ -43,24 +43,24 @@ const ProfilePage = () => {
           <>
             <Avatar style={profilePageStyles.avatar} alt="User Avatar" />
             <Typography variant="h4" align="center" gutterBottom>
-              {`${userState?.first_name} ${userState?.last_name}`}
+              {`${userState?.userData?.first_name} ${userState?.userData?.last_name}`}
             </Typography>
             <Typography variant="subtitle1" align="center" color="textSecondary">
-              {userState?.role}
+              {userState?.userData?.role}
             </Typography>
 
             <Divider style={profilePageStyles.section} />
 
             <div style={profilePageStyles.section}>
               <Typography variant="h6">Role</Typography>
-              <Typography variant="body1">{userState?.role}</Typography>
+              <Typography variant="body1">{userState?.userData?.role}</Typography>
             </div>
 
             <Divider style={profilePageStyles.section} />
 
             <div style={profilePageStyles.section}>
               <Typography variant="h6">Email</Typography>
-              <Typography variant="body1">{userState?.email}</Typography>
+              <Typography variant="body1">{userState?.userData?.email}</Typography>
             </div>
           </>
         ) : (

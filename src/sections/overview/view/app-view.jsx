@@ -27,6 +27,8 @@ export default function AppView() {
   const dispatch=useDispatch()
   const [balances,setBalances]=useState([])
   const graphState=useSelector(state=>state.graph);
+  const orderState=useSelector(state=>state.order);
+  console.log("🚀 ~ file: app-view.jsx:31 ~ AppView ~ orderState:", orderState)
 
   console.log('balances',balances)
 
@@ -65,36 +67,36 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Current "
-            total={balances?.balance?.current_coin_balance?balances?.balance?.current_coin_balance:null}
+            total={` $${balances?.balance?.current_coin_balance?balances?.balance?.current_coin_balance:0}`}
             color="success"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
+            icon={<img alt="icon" src="/assets/icons/price.jpg" />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Buy "
-            total={balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance:null}
+            total={`$${balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance:null}`}
             color="info"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+            icon={<img alt="icon" src="/assets/icons/priceOne.png" />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Sold "
-            total={balances?.balance?.sell_order_balance?balances?.balance?.sell_order_balance:null}
+            total={`$${balances?.balance?.sell_order_balance?balances?.balance?.sell_order_balance:0}`}
             color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
+            icon={<img alt="icon" src="/assets/icons/sold.png" />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Profit"
-            total={balances?.balance?.profit_balance?balances?.balance?.profit_balance:null}
+            total={`$${balances?.balance?.profit_balance?balances?.balance?.profit_balance:0}`}
             color="error"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
+            icon={<img alt="icon" src="/assets/icons/profit.png" />}
           />
         </Grid>
 
