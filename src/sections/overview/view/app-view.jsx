@@ -30,7 +30,7 @@ export default function AppView() {
 
   console.log('balances',balances)
 
-const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Graph']
+const graphLabel = ['Open Order Graph','Sold Order Graph','Profit Order Graph']
 
   useEffect(()=>{
     dispatch(getOpenBalanceGraphData())
@@ -65,7 +65,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Current "
-            total={balances?.balance?.current_coin_balance?balances?.balance?.current_coin_balance:null}
+            total={balances?.balance?.current_coin_balance?balances?.balance?.current_coin_balance: 0}
             color="success"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
@@ -74,7 +74,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Buy "
-            total={balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance:null}
+            total={balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance: 0}
             color="info"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
@@ -83,7 +83,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Sold "
-            total={balances?.balance?.sell_order_balance?balances?.balance?.sell_order_balance:null}
+            total={balances?.balance?.sell_order_balance?balances?.balance?.sell_order_balance: 0}
             color="warning"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
           />
@@ -92,7 +92,7 @@ const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Grap
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Profit"
-            total={balances?.balance?.profit_balance?balances?.balance?.profit_balance:null}
+            total={balances?.balance?.profit_balance?balances?.balance?.profit_balance: 0}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />

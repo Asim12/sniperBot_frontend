@@ -9,7 +9,7 @@ const LineChart = ({graphData,graphLabel}) => {
   useEffect(() => {
     // Sample data for the line chart
     const data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       datasets: [
         {
           label: graphLabel,
@@ -30,7 +30,7 @@ const LineChart = ({graphData,graphLabel}) => {
         },
         y: {
           beginAtZero: true,
-          max: 100,
+          // max: 100,
         },
       },
     };
@@ -46,7 +46,7 @@ const LineChart = ({graphData,graphLabel}) => {
   return (
     <Paper elevation={3} style={{ padding: 16 }}>
       <Typography variant="h6" gutterBottom>
-        Sales Trend
+        {/* Graph */}
       </Typography>
       <canvas ref={chartRef} width="400" height="200"></canvas>
     </Paper>

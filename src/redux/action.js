@@ -338,7 +338,7 @@ export const getOpenBalanceGraphData = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/openBalanceGraphWeekly', {
+      const response = await axios.get('http://localhost:3000/api/openBalanceGraphYearly', {
         headers: {
           'x-access-token': token,
         },
@@ -357,7 +357,7 @@ export const getSellBalanceGraphData = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/sellBalanceGraphWeekly', {
+      const response = await axios.get('http://localhost:3000/api/sellBalanceGraphYearly', {
         headers: {
           'x-access-token': token,
         },
@@ -375,7 +375,7 @@ export const getProfitBalanceGraphData = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/profitGraphWeekly', {
+      const response = await axios.get('http://localhost:3000/api/profitGraphYearly', {
         headers: {
           'x-access-token': token,
         },
