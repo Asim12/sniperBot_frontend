@@ -32,7 +32,7 @@ export default function AppView() {
 
   console.log('balances',balances)
 
-const graphLabel=['Open Balance Graph','Sell Balance Graph','Profit Balance Graph']
+const graphLabel = ['Open Order Graph','Sold Order Graph','Profit Order Graph']
 
   useEffect(()=>{
     dispatch(getOpenBalanceGraphData())
