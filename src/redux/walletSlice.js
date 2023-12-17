@@ -9,9 +9,6 @@ const walletSlice = createSlice({
     loading: false,
   },
   reducers: {
-
-   
-  
     startLoading: (state) => {
       state.loading = true;
     },
