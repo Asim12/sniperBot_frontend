@@ -32,6 +32,11 @@ const navConfig = [
     path: '/custom-orders',
     icon: icon('ic_cart'),
   },
+  {
+    title: 'Trade Settings',
+    path: '/trade-settings',
+    icon:''
+  },
   
 
 ];

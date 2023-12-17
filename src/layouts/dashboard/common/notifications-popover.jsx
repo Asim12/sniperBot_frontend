@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { set, sub } from 'date-fns';
 import { faker } from '@faker-js/faker';
 
-import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';
@@ -24,6 +23,8 @@ import { getNotifications, markAllasReadNotifications } from 'src/redux/action';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useCallback } from 'react';
+import Box from '@mui/material/Box';
+
 
 // ----------------------------------------------------------------------
 

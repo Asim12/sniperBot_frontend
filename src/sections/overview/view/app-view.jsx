@@ -66,7 +66,7 @@ const graphLabel = ['Open Order Graph','Sold Order Graph','Profit Order Graph']
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Current "
+            title="Available"
             total={` $${balances?.balance?.current_coin_balance?balances?.balance?.current_coin_balance:0}`}
             color="success"
             icon={<img alt="icon" src="/assets/icons/price.jpg" />}

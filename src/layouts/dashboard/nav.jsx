@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -23,6 +22,8 @@ import Scrollbar from 'src/components/scrollbar';
 import logoImg from '../../images/logo.png'
 import { NAV } from './config-layout';
 import navConfig from './config-navigation';
+import Box from '@mui/material/Box';
+
 
 // ----------------------------------------------------------------------
 

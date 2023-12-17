@@ -9,6 +9,7 @@ import walletReducer from './walletSlice';
 import orderReducer from './orderSlice';
 import notificationReducer from './NotificationSlice';
 import graphReducer from './GraphSlice';
+import settingsReducer from './settingsSlice'
 
 const persistConfig = {
   key: 'root',
@@ -20,7 +21,8 @@ const reducer=combineReducers({
   wallet:walletReducer,
   order:orderReducer,
   notification:notificationReducer,
-  graph:graphReducer
+  graph:graphReducer,
+  settings:settingsReducer
 })
 
 const persistedReducer=persistReducer(persistConfig,reducer)

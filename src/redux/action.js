@@ -365,3 +365,219 @@ export const getProfitBalanceGraphData = createAsyncThunk(
     }
   }
 );
+
+
+
+// settings 
+
+
+export const getSettings = createAsyncThunk(
+  'getSettings/fetchgetsettings',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
+      const response = await axios.get('http://localhost:3000/api/getSetting', {
+        headers: {
+          'x-access-token': token,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    }
+  }
+);
+
+
+export const createSettings = createAsyncThunk('settings/createSettings', async (buy_amount_eth,profit_percentage, { dispatch }) => {
+  try {
+    
+
+    // Retrieve token from local storage
+    const token = localStorage.getItem('token');
+
+    // Make the API call to get wallet details
+    const response = await axios.post(
+      'http://localhost:3000/api/createSetting',
+      { buy_amount_eth,profit_percentage },
+      {
+        headers: {
+          'x-access-token': `${token}`,
+        },
+      }
+    );
+
+    if(response){
+
+      const { data } = response;
+      
+      
+      
+          // Dispatch the successful action
+          showToast('Trade Settings Created!', { type: 'success' });
+      
+          return data ;
+    }
+  } catch (error) {
+    // Dispatch the failure action
+    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+    return { error: error.message };
+  }
+});
+
+
+
+
+
+export const editSettings = createAsyncThunk('editSettings/postEditSettings', async ({trade_setting_id,buy_amount_eth,profit_percentage}, { dispatch }) => {
+  try {
+    
+
+    // Retrieve token from local storage
+    const token = localStorage.getItem('token');
+
+    // Make the API call to get wallet details
+    const response = await axios.post(
+      'http://localhost:3000/api/editSetting',
+      { trade_setting_id,buy_amount_eth,profit_percentage },
+      {
+        headers: {
+          'x-access-token': `${token}`,
+        },
+      }
+    );
+
+    if(response){
+
+      const { data } = response;
+      
+      
+      
+          // Dispatch the successful action
+          showToast('Trade Settings Edited!', { type: 'success' });
+      
+          return data ;
+    }
+  } catch (error) {
+    // Dispatch the failure action
+    console.log(error)
+    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+    return { error: error.message };
+  }
+});
+
+
+
+
+export const deleteSettings = createAsyncThunk('deleteSettings/postRemoveSettings', async (trade_setting_id,user_id, { dispatch }) => {
+  try {
+    
+
+    // Retrieve token from local storage
+    const token = localStorage.getItem('token');
+
+    // Make the API call to get wallet details
+    const response = await axios.post(
+      'http://localhost:3000/api/deleteSetting',
+      { trade_setting_id,user_id },
+      {
+        headers: {
+          'x-access-token': `${token}`,
+        },
+      }
+    );
+
+    if(response){
+
+      const { data } = response;
+      
+      
+      
+          // Dispatch the successful action
+          showToast('Trade Settings Deleted!', { type: 'success' });
+      
+          return data ;
+    }
+  } catch (error) {
+    // Dispatch the failure action
+    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+    return { error: error.message };
+  }
+});
+
+
+
+export const pauseSettings = createAsyncThunk('pauseSettings/postPauseSettings', async (trade_setting_id, { dispatch }) => {
+  try {
+    
+
+    // Retrieve token from local storage
+    const token = localStorage.getItem('token');
+
+    // Make the API call to get wallet details
+    const response = await axios.post(
+      'http://localhost:3000/api/pauseTrading',
+      { trade_setting_id },
+      {
+        headers: {
+          'x-access-token': `${token}`,
+        },
+      }
+    );
+
+    if(response){
+
+      const { data } = response;
+      
+      
+      
+          // Dispatch the successful action
+          showToast('Trade Settings Paused!', { type: 'success' });
+      
+          return data ;
+    }
+  } catch (error) {
+    // Dispatch the failure action
+    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+    return { error: error.message };
+  }
+});
+
+
+
+
+export const startSettings = createAsyncThunk('resumeSettings/postResumeSettings', async (trade_setting_id, { dispatch }) => {
+  try {
+    
+
+    // Retrieve token from local storage
+    const token = localStorage.getItem('token');
+
+    // Make the API call to get wallet details
+    const response = await axios.post(
+      'http://localhost:3000/api/startTrading',
+      { trade_setting_id },
+      {
+        headers: {
+          'x-access-token': `${token}`,
+        },
+      }
+    );
+
+    if(response){
+
+      const { data } = response;
+      
+      
+      
+          // Dispatch the successful action
+          showToast('Trade Settings Started!', { type: 'success' });
+      
+          return data ;
+    }
+  } catch (error) {
+    // Dispatch the failure action
+    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+    return { error: error.message };
+  }
+});
