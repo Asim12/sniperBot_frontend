@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSettings, editSettings, pauseSettings, startSettings } from 'src/redux/action';
 import { Pause, PlayArrow, Stop } from '@mui/icons-material'; // Import Material-UI icons
+import { Typography } from '@mui/material';
 
 const SettingsPage = () => {
   const dispatch = useDispatch();
@@ -53,13 +54,14 @@ const SettingsPage = () => {
   };
 
 
-  const handleStop=()=>{
+  const handleStop=async ()=>{
+
     dispatch(pauseSettings(
         originalValues._id,
       
       ));
+      
 
-      dispatch(getSettings())
   }
 
 
@@ -70,7 +72,6 @@ const SettingsPage = () => {
       
       ));
 
-      dispatch(getSettings())
   }
 
   const handleCancelClick = () => {
@@ -97,7 +98,7 @@ const SettingsPage = () => {
         <span style={valueStyle}>{settingsState?.settings?.setting?.[value]}</span>
         {value === 'trading_status' && (
           <>
-            {settingsState?.settings?.setting?.trading_status ? (
+          {settingsState?.loading||settingsState?.getSettingsLoading?<Typography>Please wait...</Typography>:settingsState?.settings?.setting?.trading_status===true ? (
                               <Pause onClick={handleStop} title="Stop" style={iconStyle} />
 
             ) : (

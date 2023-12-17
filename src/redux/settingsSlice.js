@@ -5,6 +5,7 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState: {
     loading: false,
+    getSettingsLoading:false,
     settings: [],
 
   },
@@ -14,10 +15,13 @@ const settingsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getSettings.pending, (state) => {
       state.loading = true;
+      state.getSettingsLoading=true
     });
     builder.addCase(getSettings.fulfilled, (state, action) => {
-      state.loading = false;
       state.settings = action.payload;
+      state.loading = false;
+      state.getSettingsLoading=false
+
     });
     builder.addCase(getSettings.rejected, (state) => {
       state.loading = false;

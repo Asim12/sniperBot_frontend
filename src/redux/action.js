@@ -2,45 +2,47 @@ import axios from 'axios';
 import { showToast } from 'src/components/snackbar/toastHelper';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { setWallet, startLoading, stopLoading,resetWalletState } from './walletSlice';
+import { setWallet, startLoading, stopLoading, resetWalletState } from './walletSlice';
 import { customOrdersLoading, setSoldOrders } from './orderSlice';
 
 // auth actions
-export const login = createAsyncThunk('user/login', async ({ email, password,router }, { dispatch }) => {
-  try {
-    // Make the API call to login
-    console.log('zain');
-    console.log('Backend URL:', 'localhost:3000');
+export const login = createAsyncThunk(
+  'user/login',
+  async ({ email, password, router }, { dispatch }) => {
+    try {
+      // Make the API call to login
+      console.log('zain');
+      console.log('Backend URL:', 'localhost:3000');
 
-    const response = await axios.post('http://localhost:3000/api/login', {
-      // Your login payload
-      email,
-      password,
-    });
+      const response = await axios.post('http://localhost:3000/api/login', {
+        // Your login payload
+        email,
+        password,
+      });
 
-    const { data, token } = response.data;
+      const { data, token } = response.data;
 
-    console.log('🚀 ~ file: action.js:18 ~ login ~ data:', data);
+      console.log('🚀 ~ file: action.js:18 ~ login ~ data:', data);
 
-    // Store the token in local storage
-    localStorage.setItem('token', token);
-    showToast(response?.data.message || 'Welcome!', { type: 'success' });
+      // Store the token in local storage
+      localStorage.setItem('token', token);
+      showToast(response?.data.message || 'Welcome!', { type: 'success' });
 
-    // Assuming you have access to router or you can pass it as a parameter
-    router.push('/');
+      // Assuming you have access to router or you can pass it as a parameter
+      router.push('/');
 
-    return  data ;
-  } catch (error) {
-    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
-    return { error: error.message };
-  } 
-});
+      return data;
+    } catch (error) {
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return { error: error.message };
+    }
+  }
+);
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
-  async ({ firstName, lastName, email, password,router }, { dispatch }) => {
+  async ({ firstName, lastName, email, password, router }, { dispatch }) => {
     try {
-
       const response = await axios.post('http://localhost:3000/api/register', {
         first_name: firstName,
         last_name: lastName,
@@ -50,28 +52,26 @@ export const registerUser = createAsyncThunk(
 
       const { data } = response;
       showToast(data.message || 'User Registered', { type: 'success' });
-      router.push('/login')
+      router.push('/login');
 
-      return  data ;
+      return data;
     } catch (error) {
       console.error(error.response?.data.message || 'Something went wrong');
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
 
       throw error; // Re-throw the error to mark the thunk as rejected
-    } 
+    }
   }
 );
 
 export const logoutUser = async (dispatch, router) => {
   try {
     // Make the API call to login
-   
 
     // Store the token in local storage
     localStorage.removeItem('token');
     router.push('/login');
     return;
-
   } catch (error) {
     // toast.error('Something went wrong');
     console.log('erro from logout', error);
@@ -81,62 +81,58 @@ export const logoutUser = async (dispatch, router) => {
 
 // wallet actions
 
-export const getWalletDetails = createAsyncThunk('wallet/getWalletDetails', async (password, { dispatch }) => {
-  try {
-    dispatch(startLoading());
+export const getWalletDetails = createAsyncThunk(
+  'wallet/getWalletDetails',
+  async (password, { dispatch }) => {
+    try {
+      dispatch(startLoading());
 
-    // Retrieve token from local storage
-    const token = localStorage.getItem('token');
+      // Retrieve token from local storage
+      const token = localStorage.getItem('token');
 
-    // Make the API call to get wallet details
-    const response = await axios.post(
-      'http://localhost:3000/api/getWalletDetails',
-      { password },
-      {
-        headers: {
-          'x-access-token': `${token}`,
-        },
+      // Make the API call to get wallet details
+      const response = await axios.post(
+        'http://localhost:3000/api/getWalletDetails',
+        { password },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
+
+      if (response) {
+        const { data } = response;
+
+        console.log('response wallet', data);
+
+        // Dispatch the successful action
+        showToast('Authenticated!', { type: 'success' });
+
+        return data;
       }
-    );
-
-    if(response){
-
-      const { data } = response;
-      
-      
-          console.log('response wallet',data)
-      
-          // Dispatch the successful action
-          showToast('Authenticated!', { type: 'success' });
-      
-          return data ;
+    } catch (error) {
+      // Dispatch the failure action
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return { error: error.message };
+    } finally {
+      dispatch(stopLoading());
     }
-  } catch (error) {
-    // Dispatch the failure action
-    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
-    return { error: error.message };
-  } finally {
-    dispatch(stopLoading());
   }
-});
-
+);
 
 export const resetWalletDetails = async (dispatch) => {
   try {
     // Make the API call to login
-   
+
     dispatch(resetWalletState());
-
   } catch (error) {
-    console.log(error)
+    console.log(error);
     showToast('Something went wrong in wallet details information reset', { type: 'error' });
-
   }
 };
 
-
 // sold order action
-
 
 export const getSoldOrders = createAsyncThunk(
   'soldOrders/fetchSoldOrders',
@@ -168,9 +164,7 @@ export const getSoldOrders = createAsyncThunk(
   }
 );
 
-
 // buy order actions
-
 
 export const getBuyOrders = createAsyncThunk(
   'buyOrders/fetchBuyOrders',
@@ -202,10 +196,7 @@ export const getBuyOrders = createAsyncThunk(
   }
 );
 
-
-
 // custom order actions
-
 
 export const getCustomOrders = createAsyncThunk(
   'customOrders/fetchCustomOrders',
@@ -237,13 +228,10 @@ export const getCustomOrders = createAsyncThunk(
   }
 );
 
-
-
 export const addCustomOrders = createAsyncThunk(
   'addCustomOrders/newCustomOrders',
   async ({ contract_address }, { dispatch, rejectWithValue }) => {
     try {
-
       const token = localStorage.getItem('token');
       const response = await axios.post(
         'http://localhost:3000/api/addCustomContracts',
@@ -256,19 +244,16 @@ export const addCustomOrders = createAsyncThunk(
       );
 
       const { data } = response;
-      showToast(data.Message||'Order Added!', { type: 'success' });
+      showToast(data.Message || 'Order Added!', { type: 'success' });
 
       return data;
     } catch (error) {
-      console.log('add order err',error)
+      console.log('add order err', error);
       showToast(error.response?.data?.Message || 'Something went wrong', { type: 'error' });
       return rejectWithValue(error?.response?.data?.Message || 'Something went wrong');
-    } 
+    }
   }
 );
-
-
-
 
 export const getNotifications = createAsyncThunk(
   'notifications/fetchNotifications',
@@ -288,9 +273,6 @@ export const getNotifications = createAsyncThunk(
   }
 );
 
-
-
-
 export const markAllasReadNotifications = createAsyncThunk(
   'markAllRead/fetchMarkedNotifications',
   async (_, { getState, rejectWithValue }) => {
@@ -308,7 +290,6 @@ export const markAllasReadNotifications = createAsyncThunk(
     }
   }
 );
-
 
 // graph actions
 
@@ -329,8 +310,6 @@ export const getOpenBalanceGraphData = createAsyncThunk(
   }
 );
 
-
-
 export const getSellBalanceGraphData = createAsyncThunk(
   'setllbalancegraph/fetchsellbalancegraph',
   async (_, { getState, rejectWithValue }) => {
@@ -347,7 +326,6 @@ export const getSellBalanceGraphData = createAsyncThunk(
     }
   }
 );
-
 
 export const getProfitBalanceGraphData = createAsyncThunk(
   'profitbalancegraph/fetchprofitbalancegraph',
@@ -366,10 +344,7 @@ export const getProfitBalanceGraphData = createAsyncThunk(
   }
 );
 
-
-
-// settings 
-
+// settings
 
 export const getSettings = createAsyncThunk(
   'getSettings/fetchgetsettings',
@@ -388,196 +363,175 @@ export const getSettings = createAsyncThunk(
   }
 );
 
+export const createSettings = createAsyncThunk(
+  'settings/createSettings',
+  async (buy_amount_eth, profit_percentage, { dispatch }) => {
+    try {
+      // Retrieve token from local storage
+      const token = localStorage.getItem('token');
 
-export const createSettings = createAsyncThunk('settings/createSettings', async (buy_amount_eth,profit_percentage, { dispatch }) => {
-  try {
-    
+      // Make the API call to get wallet details
+      const response = await axios.post(
+        'http://localhost:3000/api/createSetting',
+        { buy_amount_eth, profit_percentage },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
 
-    // Retrieve token from local storage
-    const token = localStorage.getItem('token');
+      if (response) {
+        const { data } = response;
 
-    // Make the API call to get wallet details
-    const response = await axios.post(
-      'http://localhost:3000/api/createSetting',
-      { buy_amount_eth,profit_percentage },
-      {
-        headers: {
-          'x-access-token': `${token}`,
-        },
+        // Dispatch the successful action
+        showToast('Trade Settings Created!', { type: 'success' });
+
+        return data;
       }
-    );
-
-    if(response){
-
-      const { data } = response;
-      
-      
-      
-          // Dispatch the successful action
-          showToast('Trade Settings Created!', { type: 'success' });
-      
-          return data ;
+    } catch (error) {
+      // Dispatch the failure action
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return { error: error.message };
     }
-  } catch (error) {
-    // Dispatch the failure action
-    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
-    return { error: error.message };
   }
-});
+);
 
+export const editSettings = createAsyncThunk(
+  'editSettings/postEditSettings',
+  async ({ trade_setting_id, buy_amount_eth, profit_percentage }, { dispatch }) => {
+    try {
+      // Retrieve token from local storage
+      const token = localStorage.getItem('token');
 
+      // Make the API call to get wallet details
+      const response = await axios.post(
+        'http://localhost:3000/api/editSetting',
+        { trade_setting_id, buy_amount_eth, profit_percentage },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
 
+      if (response) {
+        const { data } = response;
 
+        // Dispatch the successful action
+        showToast('Trade Settings Edited!', { type: 'success' });
 
-export const editSettings = createAsyncThunk('editSettings/postEditSettings', async ({trade_setting_id,buy_amount_eth,profit_percentage}, { dispatch }) => {
-  try {
-    
-
-    // Retrieve token from local storage
-    const token = localStorage.getItem('token');
-
-    // Make the API call to get wallet details
-    const response = await axios.post(
-      'http://localhost:3000/api/editSetting',
-      { trade_setting_id,buy_amount_eth,profit_percentage },
-      {
-        headers: {
-          'x-access-token': `${token}`,
-        },
+        return data;
       }
-    );
-
-    if(response){
-
-      const { data } = response;
-      
-      
-      
-          // Dispatch the successful action
-          showToast('Trade Settings Edited!', { type: 'success' });
-      
-          return data ;
+    } catch (error) {
+      // Dispatch the failure action
+      console.log(error);
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return { error: error.message };
     }
-  } catch (error) {
-    // Dispatch the failure action
-    console.log(error)
-    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
-    return { error: error.message };
   }
-});
+);
 
+export const deleteSettings = createAsyncThunk(
+  'deleteSettings/postRemoveSettings',
+  async (trade_setting_id, user_id, { dispatch }) => {
+    try {
+      // Retrieve token from local storage
+      const token = localStorage.getItem('token');
 
+      // Make the API call to get wallet details
+      const response = await axios.post(
+        'http://localhost:3000/api/deleteSetting',
+        { trade_setting_id, user_id },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
 
+      if (response) {
+        const { data } = response;
 
-export const deleteSettings = createAsyncThunk('deleteSettings/postRemoveSettings', async (trade_setting_id,user_id, { dispatch }) => {
-  try {
-    
+        // Dispatch the successful action
+        showToast('Trade Settings Deleted!', { type: 'success' });
 
-    // Retrieve token from local storage
-    const token = localStorage.getItem('token');
-
-    // Make the API call to get wallet details
-    const response = await axios.post(
-      'http://localhost:3000/api/deleteSetting',
-      { trade_setting_id,user_id },
-      {
-        headers: {
-          'x-access-token': `${token}`,
-        },
+        return data;
       }
-    );
-
-    if(response){
-
-      const { data } = response;
-      
-      
-      
-          // Dispatch the successful action
-          showToast('Trade Settings Deleted!', { type: 'success' });
-      
-          return data ;
+    } catch (error) {
+      // Dispatch the failure action
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return { error: error.message };
     }
-  } catch (error) {
-    // Dispatch the failure action
-    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
-    return { error: error.message };
   }
-});
+);
 
+export const pauseSettings = createAsyncThunk(
+  'pauseSettings/postPauseSettings',
+  async (trade_setting_id, { dispatch }) => {
+    try {
+      // Retrieve token from local storage
+      const token = localStorage.getItem('token');
 
+      // Make the API call to get wallet details
+      const response = await axios.post(
+        'http://localhost:3000/api/pauseTrading',
+        { trade_setting_id },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
 
-export const pauseSettings = createAsyncThunk('pauseSettings/postPauseSettings', async (trade_setting_id, { dispatch }) => {
-  try {
-    
+      if (response) {
+        const { data } = response;
 
-    // Retrieve token from local storage
-    const token = localStorage.getItem('token');
+        // Dispatch the successful action
+        showToast('Trade Settings Paused!', { type: 'success' });
+        dispatch(getSettings());
 
-    // Make the API call to get wallet details
-    const response = await axios.post(
-      'http://localhost:3000/api/pauseTrading',
-      { trade_setting_id },
-      {
-        headers: {
-          'x-access-token': `${token}`,
-        },
+        return data;
       }
-    );
-
-    if(response){
-
-      const { data } = response;
-      
-      
-      
-          // Dispatch the successful action
-          showToast('Trade Settings Paused!', { type: 'success' });
-      
-          return data ;
+    } catch (error) {
+      // Dispatch the failure action
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return { error: error.message };
     }
-  } catch (error) {
-    // Dispatch the failure action
-    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
-    return { error: error.message };
   }
-});
+);
 
+export const startSettings = createAsyncThunk(
+  'resumeSettings/postResumeSettings',
+  async (trade_setting_id, { dispatch }) => {
+    try {
+      // Retrieve token from local storage
+      const token = localStorage.getItem('token');
 
+      // Make the API call to get wallet details
+      const response = await axios.post(
+        'http://localhost:3000/api/startTrading',
+        { trade_setting_id },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
 
+      if (response) {
+        const { data } = response;
 
-export const startSettings = createAsyncThunk('resumeSettings/postResumeSettings', async (trade_setting_id, { dispatch }) => {
-  try {
-    
+        // Dispatch the successful action
+        showToast('Trade Settings Started!', { type: 'success' });
+        dispatch(getSettings());
 
-    // Retrieve token from local storage
-    const token = localStorage.getItem('token');
-
-    // Make the API call to get wallet details
-    const response = await axios.post(
-      'http://localhost:3000/api/startTrading',
-      { trade_setting_id },
-      {
-        headers: {
-          'x-access-token': `${token}`,
-        },
+        return data;
       }
-    );
-
-    if(response){
-
-      const { data } = response;
-      
-      
-      
-          // Dispatch the successful action
-          showToast('Trade Settings Started!', { type: 'success' });
-      
-          return data ;
+    } catch (error) {
+      // Dispatch the failure action
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return { error: error.message };
     }
-  } catch (error) {
-    // Dispatch the failure action
-    showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
-    return { error: error.message };
   }
-});
+);
