@@ -152,7 +152,14 @@ export const getSoldOrders = createAsyncThunk(
       );
 
       const { data } = response;
-      showToast('Orders retrieved!', { type: 'success' });
+
+      if(data?.sold_order?.length===0){
+        showToast('No orders added yet!', { type: 'error' });
+
+      }else{
+
+        showToast('Orders retrieved!', { type: 'success' });
+      }
 
       return data.sold_order;
     } catch (error) {
@@ -184,9 +191,16 @@ export const getBuyOrders = createAsyncThunk(
       );
 
       const { data } = response;
-      showToast('Orders retrieved!', { type: 'success' });
 
-      return data.buy_order;
+      if(data?.buy_order?.length===0){
+        showToast('No orders added yet!', { type: 'error' });
+
+      }else{
+
+        showToast('Orders retrieved!', { type: 'success' });
+      }
+
+      return data?.buy_order;
     } catch (error) {
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
       return rejectWithValue(error.response?.data.message || 'Something went wrong');
@@ -216,9 +230,16 @@ export const getCustomOrders = createAsyncThunk(
       );
 
       const { data } = response;
-      showToast('Orders retrieved!', { type: 'success' });
 
-      return data.custom_orders;
+      if(data?.custom_orders?.length===0){
+        showToast('No Orders added yet!', { type: 'error' });
+
+      }else{
+
+        showToast('Orders retrieved!', { type: 'success' });
+      }
+
+      return data?.custom_orders;
     } catch (error) {
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
       return rejectWithValue(error.response?.data.message || 'Something went wrong');
@@ -365,7 +386,7 @@ export const getSettings = createAsyncThunk(
 
 export const createSettings = createAsyncThunk(
   'settings/createSettings',
-  async (buy_amount_eth, profit_percentage, { dispatch }) => {
+  async ({buy_amount_eth, profit_percentage}, { dispatch }) => {
     try {
       // Retrieve token from local storage
       const token = localStorage.getItem('token');
@@ -420,6 +441,7 @@ export const editSettings = createAsyncThunk(
 
         // Dispatch the successful action
         showToast('Trade Settings Edited!', { type: 'success' });
+        dispatch(getSettings());
 
         return data;
       }
@@ -434,11 +456,12 @@ export const editSettings = createAsyncThunk(
 
 export const deleteSettings = createAsyncThunk(
   'deleteSettings/postRemoveSettings',
-  async (trade_setting_id, user_id, { dispatch }) => {
+  async ({trade_setting_id, user_id}, { dispatch }) => {
     try {
       // Retrieve token from local storage
       const token = localStorage.getItem('token');
 
+      console.log('deleting')
       // Make the API call to get wallet details
       const response = await axios.post(
         'http://localhost:3000/api/deleteSetting',
@@ -458,8 +481,11 @@ export const deleteSettings = createAsyncThunk(
 
         return data;
       }
+      console.log('deleting')
+
     } catch (error) {
       // Dispatch the failure action
+      console.log(error)
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
       return { error: error.message };
     }

@@ -1,32 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSettings, editSettings, pauseSettings, startSettings } from 'src/redux/action';
-import { Pause, PlayArrow, Stop } from '@mui/icons-material'; // Import Material-UI icons
+import { getSettings, editSettings, pauseSettings, startSettings, deleteSettings, createSettings } from 'src/redux/action';
+import { Pause, PlayArrow } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 
 const SettingsPage = () => {
   const dispatch = useDispatch();
   const settingsState = useSelector((state) => state.settings);
-  console.log("🚀 ~ file: settings-view.jsx:9 ~ SettingsPage ~ settingsState:", settingsState)
   const [editMode, setEditMode] = useState(false);
   const [editedValues, setEditedValues] = useState({});
   const [originalValues, setOriginalValues] = useState({});
-
-  console.log(originalValues)
+  const [showCreateFields, setShowCreateFields] = useState(false);
+  const [createValues, setCreateValues] = useState({});
 
   useEffect(() => {
     dispatch(getSettings());
-
-    setOriginalValues(settingsState?.settings?.setting)
+    setOriginalValues(settingsState?.settings?.setting);
   }, [dispatch]);
 
   const editableFields = ['trade_setting_id', 'buy_amount_eth', 'profit_percentage'];
 
   const handleEditClick = () => {
     setEditMode(true);
-    // Set initial values for editing
     setEditedValues({ ...settingsState?.settings?.setting });
     setOriginalValues({ ...settingsState?.settings?.setting });
+  };
+
+  const handleDelete = () => {
+    const { _id, user_id } = settingsState?.settings?.setting || {};
+  
+    if (_id && user_id) {
+      if (window.confirm('Are you sure you want to delete this setting?')) {
+        dispatch(deleteSettings({ trade_setting_id: _id, user_id }))
+          .then(() => {
+            // Code to execute after deleteSettings is complete
+            dispatch(getSettings()); // Refresh settings after deletion
+          })
+          .catch((error) => {
+            console.error('Error deleting setting:', error);
+            // Handle error if needed
+          });
+      }
+    } else {
+      console.error('Invalid trade_setting_id or user_id');
+    }
+  };
+
+  const handleSaveClick = () => {
+    dispatch(editSettings({
+      trade_setting_id: editedValues._id,
+      buy_amount_eth: editedValues.buy_amount_eth,
+      profit_percentage: editedValues.profit_percentage,
+    }));
+
+    setEditMode(false);
+    dispatch(getSettings());
+  };
+
+  const handleStop = async () => {
+    dispatch(pauseSettings(settingsState?.settings?.setting?._id));
+  };
+
+  const handlePlay = () => {
+    dispatch(startSettings(settingsState?.settings?.setting?._id));
+  };
+
+  const handleCancelClick = () => {
+    setEditedValues({ ...originalValues });
+    setEditMode(false);
+  };
+
+  const handleCreateClick = () => {
+    setShowCreateFields(true);
   };
 
 
@@ -37,47 +82,22 @@ const SettingsPage = () => {
       .join(' ')
   );
 
-  const handleSaveClick = () => {
-    // Dispatch action to edit settings with editable values
-    dispatch(editSettings({
-      trade_setting_id: editedValues._id,
-      buy_amount_eth: editedValues.buy_amount_eth,
-      profit_percentage: editedValues.profit_percentage,
-    }));
-
-    // Handle any additional logic on save if needed
-
-    // Exit edit mode
-    setEditMode(false);
-
-    dispatch(getSettings())
-  };
-
-
-  const handleStop=async ()=>{
-
-    dispatch(pauseSettings(
-        originalValues._id,
-      
-      ));
-      
-
-  }
-
-
+  const handleCreateSubmit = () => {
+    dispatch(createSettings({
+      buy_amount_eth: Number(createValues.buy_amount_eth),
+      profit_percentage: Number(createValues.profit_percentage),
+    }))
+    .then(() => {
+      // Code to execute after createSettings is complete
+      dispatch(getSettings());
+      setShowCreateFields(false);
+      setEditMode(false);
+      setCreateValues({});
+    });
   
-  const handlePlay=()=>{
-    dispatch(startSettings(
-        originalValues._id,
-      
-      ));
-
-  }
-
-  const handleCancelClick = () => {
-    // Reset edited values to original values on cancel
-    setEditedValues({ ...originalValues });
+    setShowCreateFields(false);
     setEditMode(false);
+    setCreateValues({});
   };
 
   const renderValue = (value, isEditable) => {
@@ -98,13 +118,12 @@ const SettingsPage = () => {
         <span style={valueStyle}>{settingsState?.settings?.setting?.[value]}</span>
         {value === 'trading_status' && (
           <>
-          {settingsState?.loading||settingsState?.getSettingsLoading?<Typography>Please wait...</Typography>:settingsState?.settings?.setting?.trading_status===true ? (
-                              <Pause onClick={handleStop} title="Stop" style={iconStyle} />
-
+            {settingsState?.loading || settingsState?.getSettingsLoading ? (
+              <Typography>Please wait...</Typography>
+            ) : settingsState?.settings?.setting?.trading_status === true ? (
+              <Pause onClick={handleStop} title="Stop" style={iconStyle} />
             ) : (
-
-                <PlayArrow onClick={handlePlay} style={iconStyle} />
-
+              <PlayArrow onClick={handlePlay} style={iconStyle} />
             )}
           </>
         )}
@@ -115,6 +134,29 @@ const SettingsPage = () => {
   return (
     <div style={containerStyle}>
       <h2 style={headerStyle}>Trade Settings</h2>
+      {showCreateFields && (
+        <div style={createFieldsContainerStyle}>
+          <div style={inputContainerStyle}>
+            <label style={labelStyle}>Buy Amount ETH:</label>
+            <input
+              type="text"
+              value={createValues.buy_amount_eth || ''}
+              onChange={(e) => setCreateValues((prev) => ({ ...prev, buy_amount_eth: e.target.value }))}
+              style={inputStyle}
+            />
+          </div>
+          <div style={inputContainerStyle}>
+            <label style={labelStyle}>Profit Percentage:</label>
+            <input
+              type="text"
+              value={createValues.profit_percentage || ''}
+              onChange={(e) => setCreateValues((prev) => ({ ...prev, profit_percentage: e.target.value }))}
+              style={inputStyle}
+            />
+          </div>
+          <button onClick={handleCreateSubmit} style={submitBtnStyle}>Submit</button>
+        </div>
+      )}
       {Object.keys(settingsState?.settings?.setting || {}).map((key) => (
         <div style={itemStyle} key={key}>
           <span style={labelStyle}>{formatKey(key)}:</span>
@@ -123,28 +165,42 @@ const SettingsPage = () => {
           </span>
         </div>
       ))}
-      <div style={buttonContainerStyle}>
-        {editMode ? (
-          <>
-            <button style={saveButtonStyle} onClick={handleSaveClick}>
-              Save
+      {settingsState?.settings?.setting ? (
+        <div style={buttonContainerStyle}>
+          {editMode ? (
+            <>
+              <button style={saveButtonStyle} onClick={handleSaveClick}>
+                Save
+              </button>
+              <button style={cancelButtonStyle} onClick={handleCancelClick}>
+                Cancel
+              </button>
+            </>
+          ) : (
+            <>
+              <button style={deleteButtonStyle} onClick={handleDelete}>
+                Delete
+              </button>
+              <button style={editButtonStyle} onClick={handleEditClick}>
+                Edit
+              </button>
+            </>
+          )}
+        </div>
+      ) : (
+        <div style={buttonContainerStyle}>
+          {!showCreateFields && (
+            <button style={createButtonStyle} onClick={handleCreateClick}>
+              Create
             </button>
-            <button style={cancelButtonStyle} onClick={handleCancelClick}>
-              Cancel
-            </button>
-          </>
-        ) : (
-          <button style={editButtonStyle} onClick={handleEditClick}>
-            Edit
-          </button>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
-// Inline styles
-// ... (same as before)
+
 
 
 // Inline styles
@@ -153,11 +209,34 @@ const containerStyle = {
   marginBottom: '20px',
 };
 
+const createFieldsContainerStyle = {
+  marginBottom: '20px',
+};
+
+const submitBtnStyle = {
+  backgroundColor: '#4caf50',
+  color: '#ffffff',
+  padding: '10px',
+  borderRadius: '5px',
+  cursor: 'pointer',
+};
+
+const deleteButtonStyle = {
+  backgroundColor: '#ff3d00',
+  color: '#ffffff',
+  padding: '10px',
+  borderRadius: '5px',
+  cursor: 'pointer',
+  marginRight: '10px',
+};
 const headerStyle = {
   fontSize: '24px',
   fontWeight: 'bold',
 };
 
+const inputContainerStyle = {
+  marginBottom: '10px',
+};
 const itemStyle = {
   display: 'flex',
   marginBottom: '10px',
@@ -223,5 +302,13 @@ const iconStyle = {
     marginLeft: '5px', // Adjust the margin as needed
     cursor:'pointer'
   };
+
+  const createButtonStyle = {
+  backgroundColor: '#4caf50', // Green color
+  color: '#ffffff', // White text color
+  padding: '10px',
+  borderRadius: '5px',
+  cursor: 'pointer',
+};
 
 export default SettingsPage;
