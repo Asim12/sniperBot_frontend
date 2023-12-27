@@ -76,7 +76,7 @@ const graphLabel = ['Open Order Graph','Sold Order Graph','Profit Order Graph']
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Buy "
-            total={`$${balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance:null}`}
+            total={`$${balances?.balance?.buy_order_balance?balances?.balance?.buy_order_balance:0}`}
             color="info"
             icon={<img alt="icon" src="/assets/icons/priceOne.png" />}
           />
