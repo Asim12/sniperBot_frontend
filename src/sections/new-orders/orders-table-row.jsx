@@ -10,36 +10,39 @@ import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import { formatDistanceToNow } from 'date-fns';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
+import { formatDistanceToNow } from 'date-fns';
+
 
 // ----------------------------------------------------------------------
 
 export default function OrdersTableRow({
   
   selected,
+  sellPrice,
   
   buyPrice,
+  profitAmount,
   symbol,
   logo,
+  createdAt,
+  updatedAt,
   buyTransactionHash,
+  sellTransactionHash,
   status,
   _id,
   contractAddress,
   pairAddress,
+  type,
   userId,
   amount,
-  // chainId,
+  chainId,
   profitPercentage,
-  updatedAt,
-  createdAt,
-  type,
-  currentStatus,
-  currentPrice,
-  sellPercentage,
-  action,
+  handleActionClick,
+  soldPercentage,
+action,
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
@@ -52,30 +55,29 @@ export default function OrdersTableRow({
     setOpen(null);
   };
 
-    console.log('current pirice is ',currentPrice)
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
+
         <TableCell align="center">{_id}</TableCell>
         <TableCell>{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</TableCell>
         <TableCell align="center">{symbol}</TableCell>
-        <TableCell>{buyPrice}</TableCell>
-        <TableCell align="center">{currentPrice}</TableCell>
-        <TableCell align="center">{profitPercentage+"%"}</TableCell>
-        <TableCell  style={{color:currentStatus>0?"green":'red'}} align="center">{currentStatus+"%"}</TableCell>
+        {/* <TableCell align="center">{logo}</TableCell> */}
+        {/* <TableCell>{buyPrice}</TableCell>
+        <TableCell>{sellPrice}</TableCell> */}
+        {/* <TableCell align="center">{profitPercentage+"%"}</TableCell> */}
+        {/* <TableCell align="center" style={{color:soldPercentage>0?"green":'red'}}>{soldPercentage+"%"}</TableCell> */}
         <TableCell align="center">{status}</TableCell>
-        <TableCell align="center">{type}</TableCell>
+        <TableCell>{type}</TableCell>
         <TableCell align="center">{formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}</TableCell>
         <TableCell align="center">{action}</TableCell>
-
-        {/* <TableCell align="center">{logo}</TableCell> */}
-
-        {/* <TableCell align="center">{amount}</TableCell> */}
-
-        {/* <TableCell align="center">{chainId}</TableCell> */}
+{/* 
+        <TableCell>{profitAmount}</TableCell>
+        <TableCell align="center">{amount}</TableCell>       
+        <TableCell align="center">{chainId}</TableCell> */}
         {/* <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />

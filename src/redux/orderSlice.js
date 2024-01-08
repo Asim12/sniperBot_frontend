@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getSoldOrders,getBuyOrders,getCustomOrders,addCustomOrders } from "./action";
+import { getSoldOrders,getBuyOrders,getCustomOrders,addCustomOrders,soldManual,getNewOrders } from "./action";
 const orderSlice = createSlice({
     name: 'orders',
     initialState: {
@@ -7,9 +7,14 @@ const orderSlice = createSlice({
       buyOrdersLoading:false,
       customOrdersLoading:false,
       addOrderLoading:false,
+      newOrdersLoading:false,
       soldOrders: [],
       buyOrders:[],
-      customOrders:[]
+      customOrders:[],
+      soldOrders:[],
+      newOrders:[],
+      soldManual:[],
+      soldManualLoading:false
     },
     reducers: {
     
@@ -48,6 +53,22 @@ const orderSlice = createSlice({
 
 
 
+
+
+      builder.addCase(getNewOrders.pending, (state) => {
+        state.newOrdersLoading = true;
+      });
+      builder.addCase(getNewOrders.fulfilled, (state, action) => {
+
+        state.newOrdersLoading = false;
+        state.newOrders = action.payload;
+      });
+      builder.addCase(getNewOrders.rejected, (state) => {
+        state.newOrdersLoading = false;
+      });
+
+
+
       builder.addCase(getCustomOrders.pending, (state) => {
         state.customOrdersLoading = true;
       });
@@ -71,9 +92,24 @@ const orderSlice = createSlice({
       builder.addCase(addCustomOrders.rejected, (state) => {
         state.customOrdersLoading = false;
       });
+
+
+
+
+      
+      builder.addCase(soldManual.pending, (state) => {
+        state.soldManualLoading = true;
+      });
+      builder.addCase(soldManual.fulfilled, (state, action) => {
+        state.soldManual=action.payload
+        state.soldManualLoading = false;
+      });
+      builder.addCase(soldManual.rejected, (state) => {
+        state.soldManualLoading = false;
+      });
     },
   });
   
-  export const { setSoldOrders, startLoading, stopLoading,customOrdersLoading } = orderSlice.actions;
+  export const { setSoldOrders, startLoading, stopLoading,customOrdersLoading,soldManualLoading } = orderSlice.actions;
   
   export default orderSlice.reducer;

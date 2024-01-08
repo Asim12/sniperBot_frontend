@@ -29,10 +29,12 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { getBuyOrders } from 'src/redux/action';
+import { getBuyOrders, soldManual } from 'src/redux/action';
 import { MoreVert, Visibility } from '@mui/icons-material';
 import { io } from 'socket.io-client';
-import { Link } from '@mui/material';
+import { CircularProgress, Link } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+
 
 // ----------------------------------------------------------------------
 
@@ -43,11 +45,12 @@ export default function BuyOrdersPage() {
 
   const buyOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
 
-  console.log('buy state', buyOrdersState.buyOrders);
+  console.log('buy state', buyOrdersState);
 
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
+  const [btnClicked, setBtnClicked] = useState(false);
 
   const [selected, setSelected] = useState([]);
 
@@ -75,7 +78,7 @@ export default function BuyOrdersPage() {
 
   useEffect(() => {
     dispatch(getBuyOrders({ limit: 20, pageNumber: page + 1 }));
-  }, [rowsPerPage, page]);
+  }, [rowsPerPage, page,buyOrdersState?.soldManual]);
 
   const socket = io('http://localhost:3000');
   const uniqueSymbols = Array.from(new Set(buyOrdersState.buyOrders.map((order) => order.symbol)));
@@ -90,7 +93,7 @@ export default function BuyOrdersPage() {
     socket.on('prices', (prices) => {
       // Update the state with real-time prices
       console.log('real time prices are', prices);
-      setRealTimePrices(prices);
+      setRealTimePrices(prices?prices:0);
     });
 
     // Clean up the socket connection when the component unmounts
@@ -173,6 +176,9 @@ export default function BuyOrdersPage() {
     filterName,
   });
 
+
+ 
+
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -195,6 +201,9 @@ export default function BuyOrdersPage() {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
+              {buyOrdersState?.soldManualLoading?
+              <div style={{textAlign:'center',margin:'20px 0'}}><CircularProgress/></div>:
+              <>
               <OrdersTableHead
                 order={order}
                 // orderBy={orderBy}
@@ -244,11 +253,11 @@ export default function BuyOrdersPage() {
                     return (
                       <OrdersTableRow
                         key={row._id}
-                        buyPrice={row?.buy_price}
+                        buyPrice={row?.buy_price?.toFixed(7)}
                         symbol={row?.symbol}
                         logo={row?.logo}
                         status={row?.status}
-                        currentPrice={currentSymbolPrice}
+                        currentPrice={currentSymbolPrice?.toFixed(7)}
                         _id={row?._id}
                         currentStatus={
                           (((currentSymbolPrice- row.buy_price) /
@@ -275,6 +284,13 @@ export default function BuyOrdersPage() {
                                 padding: '5px 10px',
                                 marginLeft: '10px',
                               }}
+
+                              onClick={()=>{
+                                dispatch(soldManual({ order_id:row?._id }));
+                                setBtnClicked((prev)=>!prev)
+
+
+                              }}
                             >
                               Sell
                             </Button>
@@ -296,6 +312,7 @@ export default function BuyOrdersPage() {
 
                 {/* {notFound && <TableNoData query={filterName} />} */}
               </TableBody>
+              </>}
             </Table>
           </TableContainer>
         </Scrollbar>
@@ -330,6 +347,7 @@ export default function BuyOrdersPage() {
                   Contaract Address:{' '}
                 </Typography>
                 <Typography variant="body1" color={'#000'}>
+                  {/* <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={${import.meta.env.VITE_HASH_URL}/${selec÷tedRow?.contractAddress}}> */}
                   <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
                     {selectedRow?.contractAddress}
                   </Link>
@@ -371,6 +389,7 @@ export default function BuyOrdersPage() {
                   Buy Transaction Hash:{' '}
                 </Typography>
                 <Typography variant="body1" color={'#000'}>
+                {/* <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}}> */}
                 <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
                     {selectedRow?.buy_trasaction_hash}
                   </Link>

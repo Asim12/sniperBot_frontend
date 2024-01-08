@@ -171,6 +171,92 @@ export const getSoldOrders = createAsyncThunk(
   }
 );
 
+
+
+
+//new orders
+
+export const getNewOrders = createAsyncThunk(
+  'newOrders/fetchNewOrders',
+  async ({ limit, pageNumber }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(startLoading());
+
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:3000/api/getNewOrders',
+        { limit, page_number: pageNumber },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
+
+      const { data } = response;
+      console.log("🚀 ~ file new orders: action.js:197 ~ data:", data)
+
+      if(data?.new_order?.length===0){
+        showToast('No orders added yet!', { type: 'error' });
+
+      }else{
+
+        showToast('Orders retrieved!', { type: 'success' });
+      }
+
+      return data?.new_order;
+    } catch (error) {
+
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+);
+
+
+
+export const sellOrders = createAsyncThunk(
+  'sellOrder/postSellOrders',
+  async ({ order_id }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(startLoading());
+
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:3000/api/soldManual',
+        { order_id },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
+
+      const { data } = response;
+
+      if(data?.sold_order?.length===0){
+        showToast('No orders added yet!', { type: 'error' });
+
+      }else{
+
+        showToast('Orders retrieved!', { type: 'success' });
+      }
+
+      return data.sold_order;
+    } catch (error) {
+      showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
+      return rejectWithValue(error.response?.data.message || 'Something went wrong');
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+);
+
+
+
+
 // buy order actions
 
 export const getBuyOrders = createAsyncThunk(
@@ -275,6 +361,37 @@ export const addCustomOrders = createAsyncThunk(
     }
   }
 );
+
+
+
+export const soldManual = createAsyncThunk(
+  'addsoldManual/newSoldManual',
+  async ({ order_id }, { dispatch, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:3000/api/soldManual',
+        { order_id },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+          },
+        }
+      );
+
+      const { data } = response;
+      showToast(data.Message || 'Order Sold !', { type: 'success' });
+
+      return data;
+    } catch (error) {
+      console.log('add order err', error);
+      showToast(error.response?.data?.Message || 'Something went wrong', { type: 'error' });
+      return rejectWithValue(error?.response?.data?.Message || 'Something went wrong');
+    }
+  }
+);
+
+// notification actions
 
 export const getNotifications = createAsyncThunk(
   'notifications/fetchNotifications',
@@ -386,7 +503,7 @@ export const getSettings = createAsyncThunk(
 
 export const createSettings = createAsyncThunk(
   'settings/createSettings',
-  async ({buy_amount_eth, profit_percentage}, { dispatch }) => {
+  async ({buy_amount_dollar, profit_percentage}, { dispatch }) => {
     try {
       // Retrieve token from local storage
       const token = localStorage.getItem('token');
@@ -394,7 +511,7 @@ export const createSettings = createAsyncThunk(
       // Make the API call to get wallet details
       const response = await axios.post(
         'http://localhost:3000/api/createSetting',
-        { buy_amount_eth, profit_percentage },
+        { buy_amount_dollar, profit_percentage },
         {
           headers: {
             'x-access-token': `${token}`,
@@ -420,7 +537,7 @@ export const createSettings = createAsyncThunk(
 
 export const editSettings = createAsyncThunk(
   'editSettings/postEditSettings',
-  async ({ trade_setting_id, buy_amount_eth, profit_percentage }, { dispatch }) => {
+  async ({ trade_setting_id, buy_amount_dollar, profit_percentage }, { dispatch }) => {
     try {
       // Retrieve token from local storage
       const token = localStorage.getItem('token');
@@ -428,7 +545,7 @@ export const editSettings = createAsyncThunk(
       // Make the API call to get wallet details
       const response = await axios.post(
         'http://localhost:3000/api/editSetting',
-        { trade_setting_id, buy_amount_eth, profit_percentage },
+        { trade_setting_id, buy_amount_dollar, profit_percentage },
         {
           headers: {
             'x-access-token': `${token}`,

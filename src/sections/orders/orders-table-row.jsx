@@ -68,8 +68,8 @@ action,
         {/* <TableCell align="center">{logo}</TableCell> */}
         <TableCell>{buyPrice}</TableCell>
         <TableCell>{sellPrice}</TableCell>
-        <TableCell align="center">{profitPercentage}</TableCell>
-        <TableCell align="center" style={{color:soldPercentage>0?"green":'red'}}>{soldPercentage}</TableCell>
+        <TableCell align="center">{profitPercentage+"%"}</TableCell>
+        <TableCell align="center" style={{color:soldPercentage>0?"green":'red'}}>{soldPercentage+"%"}</TableCell>
         <TableCell align="center">{status}</TableCell>
         <TableCell>{type}</TableCell>
         <TableCell align="center">{formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}</TableCell>

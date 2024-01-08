@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSettings, editSettings, pauseSettings, startSettings, deleteSettings, createSettings } from 'src/redux/action';
 import { Pause, PlayArrow } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 
 const SettingsPage = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const SettingsPage = () => {
     setOriginalValues(settingsState?.settings?.setting);
   }, [dispatch]);
 
-  const editableFields = ['trade_setting_id', 'buy_amount_eth', 'profit_percentage'];
+  const editableFields = ['trade_setting_id', 'buy_amount_dollar', 'profit_percentage'];
 
   const handleEditClick = () => {
     setEditMode(true);
@@ -49,7 +49,7 @@ const SettingsPage = () => {
   const handleSaveClick = () => {
     dispatch(editSettings({
       trade_setting_id: editedValues._id,
-      buy_amount_eth: editedValues.buy_amount_eth,
+      buy_amount_dollar: editedValues.buy_amount_dollar,
       profit_percentage: editedValues.profit_percentage,
     }));
 
@@ -84,7 +84,7 @@ const SettingsPage = () => {
 
   const handleCreateSubmit = () => {
     dispatch(createSettings({
-      buy_amount_eth: Number(createValues.buy_amount_eth),
+      buy_amount_dollar: Number(createValues.buy_amount_dollar),
       profit_percentage: Number(createValues.profit_percentage),
     }))
     .then(() => {
@@ -134,14 +134,17 @@ const SettingsPage = () => {
   return (
     <div style={containerStyle}>
       <h2 style={headerStyle}>Trade Settings</h2>
+
+      {settingsState?.loading&&<CircularProgress/>}
+
       {showCreateFields && (
         <div style={createFieldsContainerStyle}>
           <div style={inputContainerStyle}>
-            <label style={labelStyle}>Buy Amount ETH:</label>
+            <label style={labelStyle}>Buy Amount USDT</label>
             <input
               type="text"
-              value={createValues.buy_amount_eth || ''}
-              onChange={(e) => setCreateValues((prev) => ({ ...prev, buy_amount_eth: e.target.value }))}
+              value={createValues.buy_amount_dollar || ''}
+              onChange={(e) => setCreateValues((prev) => ({ ...prev, buy_amount_dollar: e.target.value }))}
               style={inputStyle}
             />
           </div>
@@ -165,37 +168,38 @@ const SettingsPage = () => {
           </span>
         </div>
       ))}
-      {settingsState?.settings?.setting ? (
-        <div style={buttonContainerStyle}>
-          {editMode ? (
-            <>
-              <button style={saveButtonStyle} onClick={handleSaveClick}>
-                Save
-              </button>
-              <button style={cancelButtonStyle} onClick={handleCancelClick}>
-                Cancel
-              </button>
-            </>
-          ) : (
-            <>
-              <button style={deleteButtonStyle} onClick={handleDelete}>
-                Delete
-              </button>
-              <button style={editButtonStyle} onClick={handleEditClick}>
-                Edit
-              </button>
-            </>
-          )}
-        </div>
-      ) : (
-        <div style={buttonContainerStyle}>
-          {!showCreateFields && (
-            <button style={createButtonStyle} onClick={handleCreateClick}>
-              Create
-            </button>
-          )}
-        </div>
-      )}
+   {settingsState?.settings?.setting && Object.keys(settingsState.settings.setting).length > 0 ? (
+  <div style={buttonContainerStyle}>
+    {editMode ? (
+      <>
+        <button style={saveButtonStyle} onClick={handleSaveClick}>
+          Save
+        </button>
+        <button style={cancelButtonStyle} onClick={handleCancelClick}>
+          Cancel
+        </button>
+      </>
+    ) : (
+      <>
+        <button style={deleteButtonStyle} onClick={handleDelete}>
+          Delete
+        </button>
+        <button style={editButtonStyle} onClick={handleEditClick}>
+          Edit
+        </button>
+      </>
+    )}
+  </div>
+) : (
+  <div style={buttonContainerStyle}>
+    {!showCreateFields && (
+      <button style={createButtonStyle} onClick={handleCreateClick}>
+        Create
+      </button>
+    )}
+  </div>
+)}
+
     </div>
   );
 };

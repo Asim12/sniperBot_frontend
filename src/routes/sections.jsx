@@ -11,6 +11,7 @@ export const BlogPage = lazy(() => import('src/pages/blog'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const SoldOrdersPage = lazy(() => import('src/pages/soldorders'));
+export const NewOrdersPage = lazy(() => import('src/pages/neworders'));
 export const BuyOrdersPage = lazy(() => import('src/pages/buyorders'));
 export const ProfilePage=lazy(() => import('src/pages/profile'));
 export const SettingsPage=lazy(() => import('src/pages/settings'));
@@ -36,6 +37,7 @@ export default function Router() {
       children: [
         { element: <IndexPage />, index: true },
         {path:'sold-orders',element:<SoldOrdersPage/>},
+        {path:'new-orders',element:<NewOrdersPage/>},
         {path:'buy-orders',element:<BuyOrdersPage/>},
         {path:'custom-orders',element:<CustomOrdersPage/>},
         {path:'profile',element:<ProfilePage/>},

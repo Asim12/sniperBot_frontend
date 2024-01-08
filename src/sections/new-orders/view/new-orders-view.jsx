@@ -30,17 +30,17 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { getSoldOrders } from 'src/redux/action';
+import { getNewOrders } from 'src/redux/action';
 import { MoreVert, Visibility } from '@mui/icons-material';
 import { Link } from '@mui/material';
 // ----------------------------------------------------------------------
 
-export default function SoldOrdersPage() {
+export default function NewOrdersPage() {
   const dispatch = useDispatch();
 
-  const soldOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
+  const newOrdersState = useSelector((state) => state.order); // assuming 'soldOrders' is the key for your reducer
 
-  console.log('sold order state is', soldOrdersState);
+  console.log('sold order state is', newOrdersState);
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -73,7 +73,7 @@ export default function SoldOrdersPage() {
   };
 
   useEffect(() => {
-    dispatch(getSoldOrders({ limit: 20, pageNumber: page + 1 }));
+    dispatch(getNewOrders({ limit: 20, pageNumber: page + 1 }));
   }, [rowsPerPage, page]);
 
   const handleSort = (event, id) => {
@@ -101,7 +101,7 @@ export default function SoldOrdersPage() {
   };
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = soldOrdersState.soldOrders
+      const newSelecteds = newOrdersState.newOrders
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((order) => order._id);
 
@@ -153,7 +153,7 @@ export default function SoldOrdersPage() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Sold Orders</Typography>
+        <Typography variant="h4">New Orders</Typography>
 
         {/* <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
           New User
@@ -174,7 +174,7 @@ export default function SoldOrdersPage() {
                 order={order}
                 // orderBy={orderBy}
                 rowCount={
-                  soldOrdersState.soldOrders.slice(
+                  newOrdersState.newOrders?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   ).length
@@ -186,10 +186,10 @@ export default function SoldOrdersPage() {
                   { id: '_id', label: 'Order ID' },
                   { id: 'createdAt', label: 'Created' },
                   { id: 'symbol', label: 'Symbol', align: 'center' },
-                  { id: 'buyPrice', label: 'Buy Price' },
-                  { id: 'sellPrice', label: 'sold Price' },
-                  { id: 'sellPercentage', label: 'sell percentage' },
-                  { id: 'soldPercentage', label: 'sold percentage' },
+                  // { id: 'buyPrice', label: 'Buy Price' },
+                  // { id: 'sellPrice', label: 'sold Price' },
+                  // { id: 'sellPercentage', label: 'sell percentage' },
+                  // { id: 'soldPercentage', label: 'sold percentage' },
                   { id: 'status', label: 'Status' },
                   { id: 'type', label: 'type' },
                   { id: 'updatedAt', label: 'Updated' },
@@ -198,15 +198,15 @@ export default function SoldOrdersPage() {
                 ]}
               />
               <TableBody>
-                {soldOrdersState?.soldOrders
+                {newOrdersState?.newOrders
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <>
                       <OrdersTableRow
                         key={row._id}
                         _id={row?._id}
-                        sellPrice={row?.sell_price?.toFixed(7)}
-                        buyPrice={row?.buy_price?.toFixed(7)}
+                        sellPrice={row?.sell_price}
+                        buyPrice={row?.buy_price}
                         profitAmount={row?.profit_amount}
                         symbol={row?.symbol}
                         logo={row?.logo}
@@ -219,7 +219,7 @@ export default function SoldOrdersPage() {
                         type={row?.type !== undefined && row?.type !== '' ? row.type : 'auto'}
                         createdAt={row?.createdAt}
                         updatedAt={row?.updatedAt}
-                        soldPercentage={ (((row.sell_price - row.buy_price)/ ((row.sell_price + row.buy_price)/2))*100).toFixed(2) }
+                        soldPercentage={ ((row.sell_price - row.buy_price)/ ((row.sell_price + row.buy_price)/2))*100 }
                         amount={row?.amount}
                         chainId={row?.chain_id}
                         action={
@@ -252,7 +252,7 @@ export default function SoldOrdersPage() {
         <TablePagination
           page={page}
           component="div"
-          count={soldOrdersState.soldOrders.length}
+          count={newOrdersState?.newOrders?.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[10, 15, 25]}
@@ -290,41 +290,6 @@ export default function SoldOrdersPage() {
                 <Typography variant="p" color={'#000'}>{selectedRow?.pairAddress}</Typography>
               </Stack>
 
-              <Stack direction={{base:'column',md:'row'}}
-                style={{ marginTop: '1rem' }}
-                gap={'2px'}
-              >
-                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>User ID: </Typography>
-                <Typography variant="p" color={'#000'}>{selectedRow?.user_id}</Typography>
-              </Stack>
-
-              <Stack direction={{base:'column',md:'row'}}
-                style={{ marginTop: '1rem' }}
-                gap={'2px'}
-              >
-                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Buy Transaction Hash: </Typography>
-                <Typography variant="p" color={'#000'}> <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
-                    {selectedRow?.buy_transaction_hash}
-                  </Link></Typography>
-              </Stack>
-
-              <Stack direction={{base:'column',md:'row'}}
-                style={{ marginTop: '1rem' }}
-                gap={'2px'}
-              >
-                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Buy Amount </Typography>
-                <Typography variant="p" color={'#000'}>{selectedRow?.Amount}</Typography>
-              </Stack>
-
-              <Stack direction={{base:'column',md:'row'}}
-                style={{ marginTop: '1rem' }}
-                gap={'2px'}
-             >
-                <Typography variant="subtitle1" style={{fontWeght:'bold',color:'#000'}}>Sell Transaction Hash: </Typography>
-                <Typography variant="p" color={'#000'}>{ <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
-                    {selectedRow?.sell_transaction_hash}
-                  </Link>}</Typography>
-              </Stack>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

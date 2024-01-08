@@ -13,12 +13,18 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
 
+  {
+    title: 'New Orders',
+    path: '/new-orders',
+    icon: icon('ic_cart'),
+  },
 
   {
     title: 'Buy Orders',
     path: '/buy-orders',
     icon: icon('ic_cart'),
   },
+
 
   {
     title: 'Sold Orders',
