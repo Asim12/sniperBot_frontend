@@ -174,7 +174,7 @@ export default function NewOrdersPage() {
                 order={order}
                 // orderBy={orderBy}
                 rowCount={
-                  newOrdersState.newOrders?.slice(
+                  newOrdersState?.newOrders?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   ).length
@@ -199,7 +199,7 @@ export default function NewOrdersPage() {
               />
               <TableBody>
                 {newOrdersState?.newOrders
-                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <>
                       <OrdersTableRow
@@ -252,7 +252,7 @@ export default function NewOrdersPage() {
         <TablePagination
           page={page}
           component="div"
-          count={newOrdersState?.newOrders?.length}
+           count={newOrdersState?.newOrderCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[10, 15, 25]}

@@ -14,6 +14,10 @@ const orderSlice = createSlice({
       soldOrders:[],
       newOrders:[],
       soldManual:[],
+      soldOrderCount:0,
+      newOrderCount:0,
+      buyOrderCount:0,
+      customOrderCount:0,
       soldManualLoading:false
     },
     reducers: {
@@ -33,7 +37,9 @@ const orderSlice = createSlice({
       });
       builder.addCase(getSoldOrders.fulfilled, (state, action) => {
         state.soldOrdersLoading = false;
-        state.soldOrders = action.payload;
+        state.soldOrders = action.payload.sold_order;
+        state.soldOrderCount=action.payload.count
+        console.log('action for sold order',action)
       });
       builder.addCase(getSoldOrders.rejected, (state) => {
         state.soldOrdersLoading = false;
@@ -45,7 +51,8 @@ const orderSlice = createSlice({
       });
       builder.addCase(getBuyOrders.fulfilled, (state, action) => {
         state.buyOrdersLoading = false;
-        state.buyOrders = action.payload;
+        state.buyOrders = action.payload.buy_order;
+        state.buyOrderCount=action.payload.count
       });
       builder.addCase(getBuyOrders.rejected, (state) => {
         state.buyOrdersLoading = false;
@@ -61,7 +68,8 @@ const orderSlice = createSlice({
       builder.addCase(getNewOrders.fulfilled, (state, action) => {
 
         state.newOrdersLoading = false;
-        state.newOrders = action.payload;
+        state.newOrders = action.payload.new_order;
+        state.newOrderCount=action.payload.count
       });
       builder.addCase(getNewOrders.rejected, (state) => {
         state.newOrdersLoading = false;
@@ -74,7 +82,8 @@ const orderSlice = createSlice({
       });
       builder.addCase(getCustomOrders.fulfilled, (state, action) => {
         state.customOrdersLoading = false;
-        state.customOrders = action.payload;
+        state.customOrders = action.payload.custom_orders;
+        state.customOrderCount=action.payload.count
       });
       builder.addCase(getCustomOrders.rejected, (state) => {
         state.customOrdersLoading = false;

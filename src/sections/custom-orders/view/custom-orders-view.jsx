@@ -217,7 +217,7 @@ export default function CustomOrdersPage() {
               />
               <TableBody>
                 {customOrdersState?.customOrders
-                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <OrdersTableRow
                       key={row._id}
@@ -258,7 +258,7 @@ export default function CustomOrdersPage() {
         <TablePagination
           page={page}
           component="div"
-          count={customOrdersState.customOrders.length}
+          count={customOrdersState.customOrderCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[10, 15, 25]}

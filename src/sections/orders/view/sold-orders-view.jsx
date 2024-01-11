@@ -73,8 +73,8 @@ export default function SoldOrdersPage() {
   };
 
   useEffect(() => {
-    dispatch(getSoldOrders({ limit: 20, pageNumber: page + 1 }));
-  }, [rowsPerPage, page]);
+    dispatch(getSoldOrders({ limit: 10, pageNumber: page + 1 }));
+  }, [rowsPerPage, page,]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -199,8 +199,8 @@ export default function SoldOrdersPage() {
               />
               <TableBody>
                 {soldOrdersState?.soldOrders
-                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
+                  // ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((row) => (
                     <>
                       <OrdersTableRow
                         key={row._id}
@@ -252,10 +252,10 @@ export default function SoldOrdersPage() {
         <TablePagination
           page={page}
           component="div"
-          count={soldOrdersState.soldOrders.length}
+          count={soldOrdersState?.soldOrderCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[10, 15, 25]}
+          rowsPerPageOptions={[20]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>

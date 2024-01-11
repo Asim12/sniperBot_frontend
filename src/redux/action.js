@@ -161,7 +161,7 @@ export const getSoldOrders = createAsyncThunk(
         showToast('Orders retrieved!', { type: 'success' });
       }
 
-      return data.sold_order;
+      return data;
     } catch (error) {
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
       return rejectWithValue(error.response?.data.message || 'Something went wrong');
@@ -204,7 +204,7 @@ export const getNewOrders = createAsyncThunk(
         showToast('Orders retrieved!', { type: 'success' });
       }
 
-      return data?.new_order;
+      return data;
     } catch (error) {
 
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
@@ -286,7 +286,7 @@ export const getBuyOrders = createAsyncThunk(
         showToast('Orders retrieved!', { type: 'success' });
       }
 
-      return data?.buy_order;
+      return data;
     } catch (error) {
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
       return rejectWithValue(error.response?.data.message || 'Something went wrong');
@@ -325,7 +325,7 @@ export const getCustomOrders = createAsyncThunk(
         showToast('Orders retrieved!', { type: 'success' });
       }
 
-      return data?.custom_orders;
+      return data;
     } catch (error) {
       showToast(error.response?.data.message || 'Something went wrong', { type: 'error' });
       return rejectWithValue(error.response?.data.message || 'Something went wrong');

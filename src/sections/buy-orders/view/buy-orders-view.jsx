@@ -100,7 +100,7 @@ export default function BuyOrdersPage() {
     return () => {
       socket.disconnect();
     };
-  }, [buyOrdersState.buyOrders]);
+  }, [buyOrdersState.buyOrders,uniqueSymbols]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -236,7 +236,7 @@ export default function BuyOrdersPage() {
               />
               <TableBody>
                 {buyOrdersState?.buyOrders
-                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, rowIndex) => {
                     const currentSymbol = row?.symbol;
                     const matchingSymbolPrice = realTimePrices?.find(
@@ -320,7 +320,7 @@ export default function BuyOrdersPage() {
         <TablePagination
           page={page}
           component="div"
-          count={buyOrdersState.buyOrders.length}
+          count={buyOrdersState.buyOrderCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[10, 15, 25]}
@@ -347,7 +347,6 @@ export default function BuyOrdersPage() {
                   Contaract Address:{' '}
                 </Typography>
                 <Typography variant="body1" color={'#000'}>
-                  {/* <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={${import.meta.env.VITE_HASH_URL}/${selec÷tedRow?.contractAddress}}> */}
                   <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
                     {selectedRow?.contractAddress}
                   </Link>
@@ -389,7 +388,6 @@ export default function BuyOrdersPage() {
                   Buy Transaction Hash:{' '}
                 </Typography>
                 <Typography variant="body1" color={'#000'}>
-                {/* <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}}> */}
                 <Link target="_blank" style={{color:"#007bff",textDecoration:'none'}} href={`${import.meta.env.VITE_HASH_URL}/${selectedRow?.contractAddress}`}>
                     {selectedRow?.buy_trasaction_hash}
                   </Link>
