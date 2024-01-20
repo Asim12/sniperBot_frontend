@@ -255,7 +255,7 @@ export default function SoldOrdersPage() {
           count={soldOrdersState?.soldOrderCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[20]}
+          rowsPerPageOptions={[10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>

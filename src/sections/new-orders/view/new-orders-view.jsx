@@ -73,7 +73,7 @@ export default function NewOrdersPage() {
   };
 
   useEffect(() => {
-    dispatch(getNewOrders({ limit: 20, pageNumber: page + 1 }));
+    dispatch(getNewOrders({ limit: 10, pageNumber: page + 1 }));
   }, [rowsPerPage, page]);
 
   const handleSort = (event, id) => {
@@ -255,7 +255,7 @@ export default function NewOrdersPage() {
            count={newOrdersState?.newOrderCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[10, 15, 25]}
+          rowsPerPageOptions={[10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>

@@ -77,7 +77,7 @@ export default function BuyOrdersPage() {
   console.log('page number is ', page);
 
   useEffect(() => {
-    dispatch(getBuyOrders({ limit: 20, pageNumber: page + 1 }));
+    dispatch(getBuyOrders({ limit: 10, pageNumber: page + 1 }));
   }, [rowsPerPage, page,buyOrdersState?.soldManual]);
 
   const socket = io('http://localhost:3000');
@@ -323,7 +323,7 @@ export default function BuyOrdersPage() {
           count={buyOrdersState.buyOrderCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[10, 15, 25]}
+          rowsPerPageOptions={[10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
