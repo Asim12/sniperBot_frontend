@@ -109,7 +109,7 @@ export default function AccountPopover() {
     // Set a new timeout to reset copy status after a few seconds
     const timeoutId = setTimeout(() => {
       setCopyStatus((prev) => ({ ...prev, [type]: false }));
-    }, 3003);
+    }, 3000);
 
     setCopyStatus((prev) => ({ ...prev, [type]: timeoutId }));
   };
