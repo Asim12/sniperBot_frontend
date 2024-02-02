@@ -12,9 +12,9 @@ export const login = createAsyncThunk(
     try {
       // Make the API call to login
       console.log('zain');
-      console.log('Backend URL:', 'localhost:3000');
+      console.log('Backend URL:', '54.160.8.224:3000');
 
-      const response = await axios.post('http://localhost:3000/api/login', {
+      const response = await axios.post('http://54.160.8.224:3000/api/login', {
         // Your login payload
         email,
         password,
@@ -43,7 +43,7 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ firstName, lastName, email, password, router }, { dispatch }) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/register', {
+      const response = await axios.post('http://54.160.8.224:3000/api/register', {
         first_name: firstName,
         last_name: lastName,
         email,
@@ -92,7 +92,7 @@ export const getWalletDetails = createAsyncThunk(
 
       // Make the API call to get wallet details
       const response = await axios.post(
-        'http://localhost:3000/api/getWalletDetails',
+        'http://54.160.8.224:3000/api/getWalletDetails',
         { password },
         {
           headers: {
@@ -142,7 +142,7 @@ export const getSoldOrders = createAsyncThunk(
 
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/getSoldOrder',
+        'http://54.160.8.224:3000/api/getSoldOrder',
         { limit, page_number: pageNumber },
         {
           headers: {
@@ -184,7 +184,7 @@ export const getNewOrders = createAsyncThunk(
 
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/getNewOrders',
+        'http://54.160.8.224:3000/api/getNewOrders',
         { limit, page_number: pageNumber },
         {
           headers: {
@@ -225,7 +225,7 @@ export const sellOrders = createAsyncThunk(
 
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/soldManual',
+        'http://54.160.8.224:3000/api/soldManual',
         { order_id },
         {
           headers: {
@@ -267,7 +267,7 @@ export const getBuyOrders = createAsyncThunk(
 
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/getBuyOrder',
+        'http://54.160.8.224:3000/api/getBuyOrder',
         { limit, page_number: pageNumber },
         {
           headers: {
@@ -306,7 +306,7 @@ export const getCustomOrders = createAsyncThunk(
 
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/getCustomOrder',
+        'http://54.160.8.224:3000/api/getCustomOrder',
         { limit, page_number: pageNumber },
         {
           headers: {
@@ -341,7 +341,7 @@ export const addCustomOrders = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/addCustomContracts',
+        'http://54.160.8.224:3000/api/addCustomContracts',
         { contract_address },
         {
           headers: {
@@ -370,7 +370,7 @@ export const soldManual = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/soldManual',
+        'http://54.160.8.224:3000/api/soldManual',
         { order_id },
         {
           headers: {
@@ -398,7 +398,7 @@ export const getNotifications = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/getNotifications', {
+      const response = await axios.get('http://54.160.8.224:3000/api/getNotifications', {
         headers: {
           'x-access-token': token,
         },
@@ -416,7 +416,7 @@ export const markAllasReadNotifications = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/markAllAsRead', {
+      const response = await axios.get('http://54.160.8.224:3000/api/markAllAsRead', {
         headers: {
           'x-access-token': token,
         },
@@ -436,7 +436,7 @@ export const getOpenBalanceGraphData = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/openBalanceGraphYearly', {
+      const response = await axios.get('http://54.160.8.224:3000/api/openBalanceGraphYearly', {
         headers: {
           'x-access-token': token,
         },
@@ -453,7 +453,7 @@ export const getSellBalanceGraphData = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/sellBalanceGraphYearly', {
+      const response = await axios.get('http://54.160.8.224:3000/api/sellBalanceGraphYearly', {
         headers: {
           'x-access-token': token,
         },
@@ -470,7 +470,7 @@ export const getProfitBalanceGraphData = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/profitGraphYearly', {
+      const response = await axios.get('http://54.160.8.224:3000/api/profitGraphYearly', {
         headers: {
           'x-access-token': token,
         },
@@ -489,7 +489,7 @@ export const getSettings = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-      const response = await axios.get('http://localhost:3000/api/getSetting', {
+      const response = await axios.get('http://54.160.8.224:3000/api/getSetting', {
         headers: {
           'x-access-token': token,
         },
@@ -510,7 +510,7 @@ export const createSettings = createAsyncThunk(
 
       // Make the API call to get wallet details
       const response = await axios.post(
-        'http://localhost:3000/api/createSetting',
+        'http://54.160.8.224:3000/api/createSetting',
         { buy_amount_dollar, profit_percentage },
         {
           headers: {
@@ -544,7 +544,7 @@ export const editSettings = createAsyncThunk(
 
       // Make the API call to get wallet details
       const response = await axios.post(
-        'http://localhost:3000/api/editSetting',
+        'http://54.160.8.224:3000/api/editSetting',
         { trade_setting_id, buy_amount_dollar, profit_percentage },
         {
           headers: {
@@ -581,7 +581,7 @@ export const deleteSettings = createAsyncThunk(
       console.log('deleting')
       // Make the API call to get wallet details
       const response = await axios.post(
-        'http://localhost:3000/api/deleteSetting',
+        'http://54.160.8.224:3000/api/deleteSetting',
         { trade_setting_id, user_id },
         {
           headers: {
@@ -618,7 +618,7 @@ export const pauseSettings = createAsyncThunk(
 
       // Make the API call to get wallet details
       const response = await axios.post(
-        'http://localhost:3000/api/pauseTrading',
+        'http://54.160.8.224:3000/api/pauseTrading',
         { trade_setting_id },
         {
           headers: {
@@ -653,7 +653,7 @@ export const startSettings = createAsyncThunk(
 
       // Make the API call to get wallet details
       const response = await axios.post(
-        'http://localhost:3000/api/startTrading',
+        'http://54.160.8.224:3000/api/startTrading',
         { trade_setting_id },
         {
           headers: {
