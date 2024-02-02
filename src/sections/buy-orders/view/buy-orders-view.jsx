@@ -80,7 +80,7 @@ export default function BuyOrdersPage() {
     dispatch(getBuyOrders({ limit: 10, pageNumber: page + 1 }));
   }, [rowsPerPage, page,buyOrdersState?.soldManual]);
 
-  const socket = io('http://34.204.94.231:3000');
+  const socket = io('http://localhost:3000');
   const uniqueSymbols = Array.from(new Set(buyOrdersState.buyOrders.map((order) => order.symbol)));
   useEffect(() => {
     // Extract unique symbols from buyOrdersState.buyOrders

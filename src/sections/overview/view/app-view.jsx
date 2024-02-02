@@ -43,7 +43,7 @@ const graphLabel = ['Open Order Graph','Sold Order Graph','Profit Order Graph']
     const getBalances=async()=> {
       try {
         const token = localStorage.getItem('token'); // Assuming your user slice has a 'token' field
-        const response = await axios.get('http://34.204.94.231:3000/api/balance', {
+        const response = await axios.get('http://localhost:3000/api/balance', {
           headers: {
             'x-access-token': token,
           },
