@@ -8,11 +8,11 @@ console.log("Testing=====>>>>>>")
 export default defineConfig({
   plugins: [
     react(),
-    // checker({
-    //   eslint: {
-    //     lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
-    //   },
-    // }),
+    checker({
+      eslint: {
+        lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
+      },
+    }),
   ],
   resolve: {
     alias: [
